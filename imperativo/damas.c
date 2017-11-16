@@ -23,17 +23,16 @@ struct {
   }
 
   // FUNCAO DO TABULEIRO E DOS JOGADORES...
-  void jogador1(char matriz[8][8],char jogador, int oposto) {
-  // system("color 20");
+  void jogar(char matriz[8][8],char jogador, int oposto) {
   int i, j, l, c, li, co, opcao = 0;
 
   // LACO DO JOGO DA DAMA...
   do {
     system("cls");
-    if (jogador == 1)// JOGADOR PECA BRANCA
-       printf("\n\n----------------    A VEZ E A DO JOGADOR PECA BRANCA  ----------\n\n\n\n");
-    if (jogador == 2)// JOGADOR PECA PRETA
-       printf("\n\n----------------    A VEZ E A DO JOGADOR PECA PRETA  ------------\n\n\n\n");
+    if (jogador == 1)// JOGADOR PECA PRETA
+       printf("\n\n----------------    A VEZ EH A DO JOGADOR PECA PRETA  ----------\n\n\n\n");
+    if (jogador == 2)// JOGADOR PECA BRANCA
+       printf("\n\n----------------    A VEZ EH A DO JOGADOR PECA BRANCA  ------------\n\n\n\n");
        printf("\t \t\t   0 1 2 3 4 5 6 7 \n");// COORDENADAS DO TABULEIRO
 
     // DESENHO DO TABULEIRO, MATRIZ E OS INDICES...
@@ -45,14 +44,14 @@ struct {
     }
 
     // ESCOLHE A PECA QUE VAI JOGAR...
-    printf("\n\n\t***************  COORDENADA DA PECA  **********************");
+    printf("\n\n\n\n\t***************  COORDENADA DA PECA  **********************");
     printf("\n\tLINHA: ");
     scanf("%d",&l);
     printf("\n\tCOLUNA: ");
     scanf("%d",&c);
 
     // POCISAO QUE A PECA VAI OCUPAR...
-    printf("\n\n\t****COORDENADA DA POSICAO QUE A PECA VAI OCULPAR****");
+    printf("\n\n\t****** COORDENADA DA POSICAO QUE A PECA VAI OCULPAR ******");
     printf("\n\tLINHA: ");
     scanf("%d",&li);
     printf("\n\tCOLUNA: ");
@@ -61,8 +60,7 @@ struct {
   // CONDICAO: SOH ANDA QUANDO A SOMA DOS INDICES FOREM PAR
   if ((li+co) % 2 == 0) {
      // FAZ COM QUE A PECA ANDE SO UMA CASA, E JOGUE UMA PECA DE CADA VEZ (PRETA OU BRANCA)
-     if((jogador == 1 && l < li)||(jogador == 2 && l > li)) {
-        printf("linha\n");
+     if((jogador == 1 && l < li) || (jogador == 2 && l > li)) {
 
       // ESSAS SAO AS CONDICOES PARA COMER UMA PECA...
 
@@ -122,7 +120,7 @@ struct {
   } while(opcao != 1); //TERMINA O LACO JOGO DA DAMA
 }
 
-// char game1[20],game2[20];//JOGADORES  NOME
+// char game1[20], game2[20]; //NOME DOS JOGADORES
 
 // FUNCAO QUE DEFINE O GANHADOR...
 void ganhador(char matriz[8][8]) {
@@ -138,21 +136,21 @@ void ganhador(char matriz[8][8]) {
 
        // VERIFICA QUEM TEM MAIS PECAS, MOSTRANDO QUEM EH O VENCEDOR...
     if(dama.cont1 > dama.cont2) {
-       printf("\n\tVENCEDOR........-> %s TOTAL DE PECAS: %d\n\n", dama.game1, dama.cont1); // GAME 1...E...JOGADOR PECA PRETA
-       strcpy(dama.ganhador, dama.game1);//PONTUACAO DO CONTADOR DE PECAS BRANCAS
-       dama.pont_max = dama.cont1; // PONTUCAO MAXIMA DO CONTADOR DE PECAS BRANCAS
+       printf("\n\tVENCEDOR........-> %s TOTAL DE PECAS: %d\n\n", dama.game1, dama.cont1); // GAME 1. JOGADOR DE PECAS PRETAS.
+       strcpy(dama.ganhador, dama.game1);// PONTUACAO DO JOGADOR DE PECAS PRETAS
+       dama.pont_max = dama.cont1; // PONTUCAO MAXIMA DO CONTADOR DE PECAS PRETAS
     }
     else {
     // OLHA QUEM TEM MAIS PECAS...
        if (dama.cont1 < dama.cont2) {
-        printf("\n\tVENCEDOR........-> %s TOTAL DE PECAS: %d\n\n",dama.game2,dama.cont2);//GAME 2 ...E ...JOGADOR PECA BRANCA
-        strcpy(dama.ganhador, dama.game2);
-        dama.pont_max = dama.cont2; //PONTUACAO MAXIMA DO CONTADOR DE PECAS BRANCAS
+        printf("\n\tVENCEDOR........-> %s TOTAL DE PECAS: %d\n\n",dama.game2,dama.cont2);//GAME 2. JOGADOR DE PECAS BRANCAS.
+        strcpy(dama.ganhador, dama.game2); // PONTUACAO DO JOGADOR DE PECAS BRANCAS
+        dama.pont_max = dama.cont2; // PONTUACAO MAXIMA DO JOGADOR DE PECAS BRANCAS
        }
        else {
-        printf("\n\tEmpate!\n\t%s: %d\n\t%s: %d\n\n\n", dama.game1, dama.cont1, dama.game2, dama.cont2); //CASO DE EMPATE
+        printf("\n\tEmpate!\n\t%s: %d\n\t%s: %d\n\n\n", dama.game1, dama.cont1, dama.game2, dama.cont2); // CASO DE EMPATE
         strcpy(dama.ganhador,"jogo empatado");
-        dama.pont_max=dama.cont2;//PONTUACAO MAXIMA
+        dama.pont_max = dama.cont2; // PONTUACAO MAXIMA
        }
     }
 }
@@ -165,14 +163,14 @@ void registro(void) {
 // FUNCAO DO JOGO QUE ESCREVE NO ARQUIVO...
 void escreve(void) {
     rewind(historico);
-    while(fread(&dama, sizeof(dama), 1, historico)==1)//LER A INFORMACAO ATE A ULTIMA.
+    while(fread(&dama, sizeof(dama), 1, historico) == 1) // LER A INFORMACAO ATE A ULTIMA.
     printf("\nJogador peca preta: %s\nJogador peca branca: %s\nVencedor: %s        Total de pecas: %d\n\n",dama.game1, dama.game2, dama.ganhador, dama.pont_max);
 }
 
 int main(int argc, char *argv[]) {
-    //DECLARACAO DOS CARACTERES NO TABULEIRO...QUEM ESTA VAZIO...QUEM E PRETA E BRANCA ...E OS ESPACOS LIVRES
+    // DECLARACAO DOS CARACTERES NO TABULEIRO... QUEM ESTA VAZIO... QUEM E PRETA E BRANCA... E OS ESPACOS LIVRES
     char matriz[8][8];
-    int i, j, jogador = 2, oposto = 1, opcao = 0, opcao_selecionada;
+    int i, j, jogador = 1, oposto = 2, opcao = 0, opcao_selecionada;
     dama.cont1 = dama.cont2 = 0;
     historico = fopen("Historico_dama.bin", "ab+");
 
@@ -203,7 +201,7 @@ int main(int argc, char *argv[]) {
       printf("\t%c 1- Jogar.\n\t%c 2- Ajuda.\n\t%c 3- Hist%crico.\n\t%c 4- Sair.\n\n",16,16,16,162,16);
       printf("\tOp%c%co: ", 135, 198);// OS NUMEROS  E PARA COLOCAR  ACENTOS...
 
-      scanf("%d",&opcao_selecionada);//ESCOLHA DA OPCAO DO MENU...
+      scanf("%d", &opcao_selecionada);//ESCOLHA DA OPCAO DO MENU...
       system("cls");
 
       switch(opcao_selecionada) {
@@ -221,18 +219,15 @@ int main(int argc, char *argv[]) {
             printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA BRANCA:\n\n\t\t\t\t ");
             scanf("%s",dama.game2);
 
-            //CONTA O TEMPO EM SEGUNDOS....
-            int tempo = clock();
-            while(clock() - tempo < 5000) {
+            while(dama.pont_max < 12) {
                 jogador = 1; oposto = 2;
-                jogador1(matriz, jogador, oposto);
+                jogar(matriz, jogador, oposto);
                 jogador = 2; oposto = 1;
-                jogador1(matriz, jogador, oposto);
+                jogar(matriz, jogador, oposto);
             }
             system("cls");
-            //system("color 20");
             desenho4(); // CHAMADA DA FUNCAO DESENHO BONECO.
-            printf("\n\t\t..........PASSARAM-SE 3 MINUTOS: FIM DO JOGO!...........\n\n\n"); // APARECE NA TELA QUANDO TERMINA O TEMPO...
+            // printf("\n\t\t.......... PASSARAM-SE 3 MINUTOS: FIM DO JOGO! ...........\n\n\n"); // APARECE NA TELA QUANDO TERMINA O TEMPO...
             ganhador(matriz); // CHAMADA DA FUNCAO GANHADOR...
             registro(); // CHAMADA DA FUNCAO REGITRO... RESPONSAVEL POR GRAVAR AS INFORMACOES.
 
