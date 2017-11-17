@@ -342,7 +342,9 @@ void gamepc(char **M){
 				}
 			}
 		}
+  }
 
+  for(i=0; i < N; i++) {
 		for(j=0; j < N; j++) {
 			if(M[i][j] == 'X') {
 				if(M[i+1][j+1] == ' ') {
