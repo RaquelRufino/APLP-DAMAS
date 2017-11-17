@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <string.h>
 
 
 struct {
@@ -9,18 +9,7 @@ struct {
 } dama;
 
 
-  void desenho() {
-     printf("\n\n\n\t\t\t0000000000000000000000000000\n\t\t\t000000000__________000000000\n\t\t\t000000________________000000\n\t\t\t0000____________________0000\n\t\t\t000_____00________00_____000\n\t\t\t00_____0000______0000_____00\n\t\t\t00_____0000______0000_____00\n\t\t\t00______00________00______00\n\t\t\t00________________________00\n\t\t\t00______0__________0______00\n\t\t\t000______00______00______000\n\t\t\t0000_______000000_______0000\n\t\t\t000000________________000000\n\t\t\t000000000___________00000000\n\t\t\t0000000000000000000000000000\n");
-  }
-  void desenho3() {
-     printf("\t\t\t´´´´´´´´´´´´´´´´´´´´´´´$¶´´´´´¶´´´´´¶¢\n\t\t\t´´´´´´´´´´´¶¶¶¶¶¶¶´´´´´´´¶¢´´´¶´´´ø¶\n\t\t\t´´´´´´´´´´¶¶´´´´ø¶¶¶´´´´´´oø´´ø´´øo\n\t\t\t´´´´´´´´´´¶7´´´´´´´¶¶¶´´´´´´1´´´1´´´´1o\n\t\t\t´´´´´´´¶¶¶¶¶¶¶´´´´´´´¶¶¶7´´´´´´´´1o¶¶¶ø\n\t\t\t´´´´´´´¶¶¶¶¶¶¶´´´´´´´´´¶¶¶¶¶¶¶¶´´1\n\t\t\t´´´´´o¶¶¶¶¶¶¶¶¶ø´´´´´´´´´´´´´´´´´´o$¢\n\t\t\t´´´¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶´´´´´´´´´´¢´´1ø´´´1¶¶o\n\t\t\t´´¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶o´´´´´´´1$´´´¶\n\t\t\t´¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶´´´´´´´¶´´´´o¶´\n\t\t\t´¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶´´´´´¶¶\n\t\t\t´´¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶´\n\t\t\t´´´¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶´\n\t\t\t´´´´´¶¶¶¶¶¶¶¶¶¶¶¶´\n\t\t\t´´´´´´´¶¶¶¶¶¶¶¶\n");
-  }
-  void desenho2() {
-     printf("\n\t\t\t´´´¶¶¶¶´´´´´´´´´´s¶¶¶¶¶´´´´´´´´´´´s¶¶¶\n\t\t\t´´´´¶¶¶¶¢´´´´´7¶¶¶¶¶¶¶¶¶¶¶¶¶´´´´´´´¶¶¶¶\n\t\t\t´´´7¶¶¶¶¢´´´¢¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶´´´´s¶¶¶¶s\n\t\t\t´´¶¶¶¶¶¶¶¶´ø¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1´¶¶¶¶¶¶¶¶\n\t\t\t´´¢øs$¶¶¶¶1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶´¶¶¶¶¢¢$$\n\t\t\t´´´´´´´´7¢ø¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶s´ø\n\t\t\t´´´´´´´´´´¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶\n\t\t\t´´´´´´´´´´1¶¶¶¶ø´´7¶¶¶¶¶1´ø¶¶¶¶¶s\n\t\t\t´´´´´´´´´´´¶¶´´´´´´´¶¶¶´´´´´´s¶¶\n\t\t\t´´´´´´´´´´1¶¶´´´´´´$¶¶¶1´´´´´´¶¶1\n\t\t\t´´´´´´´´´´´¶¶¶´´s¶¶¶´´ø¶¶s´´¶¶¶¶\n\t\t\t´´´´´´´´´´´7¶¶¶¶¶¶¶¶´´´¶¶¶¶¶¶¶¶1\n\t\t\t´´´´´´´´´´´´´¶¶¶¶¶¶¶s$s¶¶¶¶¶¶\n\t\t\t´´´´´´´´´´´ø¶´¶s¶¶¶¶¶¶¶¶¶¶¶´¶´¶s\n\t\t\t´´´´7´´´´$¶¶¶´¶´´´´´´´´´´´$´¶¶¶¶¶\n\t\t\t´1¶¶¶¶¶¶¶¶¶¶ø´¶´¶¶$¶¶$¶¶$¶7¶1´¶¶¶¶¶¶¶¶¶¶¶\n\t\t\t´´¶¶¶¶¶¶¶¶´´´´¶¶¶¶¶¶¶¶¶¶¶¶¶¶1´´´¶¶¶¶¶¶¶¶¶\n\t\t\t´´´ø¶¶¶¶¶´´´´´´1¶¶¶¶¶¶¶¶¶¶¢´´´´´´¶¶¶¶¶¶¶\n\t\t\t´´´´´s¶¶ø´´´´´´´´´$¶¶¶¶¶s´´´´´´´´1¶¶¶\n");
-  }
-  void desenho4() {
-     printf("\t\t\t\t-----\\\\////--------\n\t\t\t\t------( @@)-------\n\t\t\t\t---ooO--(_)--Ooo--\n\t\t\t\t\n\n\n");
-  }
+
 
 
   void jogar(char matriz[8][8],char jogador, int oposto) {
@@ -294,7 +283,7 @@ void ganhador(char matriz[8][8]) {
        // VERIFICA QUEM TEM MAIS PECAS, MOSTRANDO QUEM EH O VENCEDOR...
     if(dama.cont1 > dama.cont2) {
        printf("\n\tVENCEDOR........-> %s TOTAL DE PECAS: %d\n\n", dama.game1, dama.cont1); // GAME 1. JOGADOR DE PECAS PRETAS.
-        strcpy(dama.ganhador, dama.game1);// PONTUACAO DO JOGADOR DE PECAS PRETAS
+       strcpy(dama.ganhador, dama.game1);// PONTUACAO DO JOGADOR DE PECAS PRETAS
        dama.pont_max = dama.cont1; // PONTUCAO MAXIMA DO CONTADOR DE PECAS PRETAS
     }
     else {
@@ -349,7 +338,7 @@ int main(int argc, char *argv[]) {
 
       switch(opcao_selecionada) {
         case 1:
-            desenho();
+
             printf("\n\n\t\t\tSelecione o modo de jogo:\n");
             printf("\n\t\t\t1- Dois Jogadores.\n\t\t\t2- Jogar contra a maquina.\n\n");
             printf("\n\t\t\tOpicao: ");
