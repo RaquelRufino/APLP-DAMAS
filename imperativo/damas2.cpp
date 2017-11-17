@@ -2,27 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 struct {
        char game1[20], game2[20], ganhador[20];
        int cont1, cont2, pont_max;
 } dama;
 
-
-
-
-
   void jogar(char matriz[8][8],char jogador, int oposto) {
   int i, j, l, c, li, co, opcao = 0;
 
-
   do {
+
+    system("cls");
+
     if (jogador == 1)
        printf("\n\n----------------    A VEZ EH A DO JOGADOR PECA PRETA  ----------\n\n\n\n");
     if (jogador == 2)
        printf("\n\n----------------    A VEZ EH A DO JOGADOR PECA BRANCA  ------------\n\n\n\n");
        printf("\t \t\t   0 1 2 3 4 5 6 7 \n");
-
 
     for(i = 0; i < 8; i++) {
        printf("\n\t\t\t%d  ", i);
@@ -31,15 +27,14 @@ struct {
        printf("%c ", matriz[i][j]);
     }
 
-
-    printf("\n\n\n\n\t***************  COORDENADA DA PECA  **********************");
+    printf("\n\n\n\n\t***************  COORDENADA DA PECA:  **********************");
     printf("\n\tLINHA: ");
     scanf("%d",&l);
     printf("\n\tCOLUNA: ");
     scanf("%d",&c);
 
 
-    printf("\n\n\t****** COORDENADA DA POSICAO QUE A PECA VAI OCULPAR ******");
+    printf("\n\n\t****** COORDENADA DA POSICAO QUE A PECA VAI OCULPAR: ******");
     printf("\n\tLINHA: ");
     scanf("%d",&li);
     printf("\n\tCOLUNA: ");
@@ -49,8 +44,6 @@ struct {
   if ((li+co) % 2 == 0) {
 
      if((jogador == 1 && l < li) || (jogador == 2 && l > li)) {
-
-
 
         if (c-1 == co|| c+1 == co) {
             if(co == c-1) {
@@ -102,16 +95,14 @@ struct {
         }
   }
 
-  else printf("\n\n\t\t__________MOVIMENTO INVALIDO!!_________\n\t\t_________JOGUE NOVAMENTE...________\n");
+  else printf("\n\n\t\t___________MOVIMENTO INVALIDO!!_________\n\n\t\t_________JOGUE NOVAMENTE...________\n");
   }
-  
+    system("pause");
   } while(opcao != 1);
 }
 
 void jogarComp(char matriz[8][8], char jogador, int oposto) {
   int i, g, j, l, c, li, co, opcao = 0, cAux, lAux, cFim, lFim, escolhaRealizada = 0;
-
-
 
   do {
     system("cls");
@@ -125,11 +116,10 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
     int colunasPossiveis[12] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
     int index = 0;
 
-
     for(i = 0; i < 8; i++) {
        printf("\n\t\t\t%d  ", i);
 
-       for(j = 0; j < 8; j++){
+       for(j = 0; j < 8; j++) {
            printf("%c ", matriz[i][j]);
            if(matriz[i][j] == jogador && i != 0){
                 linhasPossiveis[index] = i;
@@ -139,15 +129,14 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
        }
     }
 
-
-    for(g = 0; g < 12; g++){
+    for(g = 0; g < 12; g++) {
         cAux = linhasPossiveis[g];
         lAux = colunasPossiveis[g];
         lFim = lAux-1;
-        if(lAux != -1 && cAux != -1 && lFim > 0){
+        if (lAux != -1 && cAux != -1 && lFim > 0) {
 
-            if(cAux+1 < 7 && matriz[lFim][cAux+1] == oposto){
-                if(lFim-1 >= 0 && cAux+2 < 8 && matriz[lFim-1][cAux+2] == 0){
+            if (cAux+1 < 7 && matriz[lFim][cAux+1] == oposto) {
+                if(lFim-1 >= 0 && cAux+2 < 8 && matriz[lFim-1][cAux+2] == 0) {
                     l = lAux;
                     c = cAux;
                     li = lFim - 1;
@@ -156,8 +145,8 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
                     break;
                 }
             }
-            else if(cAux-1 > 0 && matriz[lFim][cAux-1] == oposto){
-                if(lFim-1 >= 0 && cAux-2 >= 0 && matriz[lFim-1][cAux-2] == 0){
+            else if (cAux-1 > 0 && matriz[lFim][cAux-1] == oposto) {
+                if (lFim-1 >= 0 && cAux-2 >= 0 && matriz[lFim-1][cAux-2] == 0) {
                     l = lAux;
                     c = cAux;
                     li = lFim - 1;
@@ -169,13 +158,13 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
         }
     }
 
-    if(escolhaRealizada == 0){
-        for(g = 0; g < 12; g++){
+    if (escolhaRealizada == 0) {
+        for(g = 0; g < 12; g++) {
             cAux = linhasPossiveis[g];
             lAux = colunasPossiveis[g];
             lFim = lAux-1;
-            if(lAux != -1 && cAux != -1 && lFim >= 0){
-                if(cAux+1 < 8 && matriz[lFim][cAux + 1] == 0){
+            if(lAux != -1 && cAux != -1 && lFim >= 0) {
+                if(cAux+1 < 8 && matriz[lFim][cAux + 1] == 0) {
                     l = lAux;
                     c = cAux;
                     li = lFim;
@@ -183,7 +172,7 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
                     escolhaRealizada = 1;
                     break;
                 }
-                else if(cAux-1 >= 0 && matriz[lFim][cAux - 1] == 0){
+                else if(cAux-1 >= 0 && matriz[lFim][cAux - 1] == 0) {
                     l = lAux;
                     c = cAux;
                     li = lFim;
@@ -194,20 +183,13 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
             }
         }
     }
-
-
-
-    printf("\n\n\n\n\t***************  MOVIMENTO DA MAQUINA  **********************");
+    printf("\n\n\n\n\t******************  MOVIMENTO DA MAQUINA  **********************\n");
     printf("\n\tDE: LINHA - %d COLUNA - %d\n", l, c);
-    printf("\n\tPARA: LINHA - %d COLUNA - %d\n", li, co);
-
-
+    printf("\n\tPARA: LINHA - %d COLUNA - %d\n\n", li, co);
 
   if ((li+co) % 2 == 0) {
 
      if((jogador == 1 && l < li) || (jogador == 2 && l > li)) {
-
-
 
         if (c-1 == co|| c+1 == co) {
             if(co == c-1) {
@@ -261,12 +243,9 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
 
   else printf("\n\n\t\t__________MOVIMENTO INVALIDO!!_________\n\t\t_________JOGUE NOVAMENTE...________\n");
   }
- 
+    system("pause");
   } while(opcao != 1);
 }
-
-
-
 
 void ganhador(char matriz[8][8]) {
     int i, j;
@@ -320,17 +299,17 @@ int main(int argc, char *argv[]) {
 
       printf("\n\t__________________________________________________________\n");
       printf("\t__________________________________________________________\n");
+      printf("\t__________________                    ____________________\n");
       printf("\t__________________        UFCG        ____________________\n");
+      printf("\t__________________                    ____________________\n");
       printf("\t__________________    PROJETO APLP    ____________________\n");
-      printf("\t__________________                    ____________________\n");
-      printf("\t__________________        DAMAS       ____________________\n");
-      printf("\t__________________                    ____________________\n");
+      printf("\t__________________       DAMAS        ____________________\n");
       printf("\t__________________                    ____________________\n");
       printf("\t__________________________________________________________\n");
       printf("\t__________________________________________________________\n\t\t\t\t\t\n");
       printf("\tEscolha uma das opcoes abaixo:\n\n");
-      printf("\t 1- Jogar.\n\t 2- Ajuda.\n\t 3- Historico.\n\t 4- Sair.\n\n");
-      printf("\tOpicao: ");
+      printf("\t 1- Jogar.\n\t 2- Ajuda.\n\t 3- Sair.\n\n");
+      printf("\tOpcao: ");
 
       scanf("%d", &opcao_selecionada);
       system("cls");
@@ -340,18 +319,18 @@ int main(int argc, char *argv[]) {
 
             printf("\n\n\t\t\tSelecione o modo de jogo:\n");
             printf("\n\t\t\t1- Dois Jogadores.\n\t\t\t2- Jogar contra a maquina.\n\n");
-            printf("\n\t\t\tOpicao: ");
+            printf("\n\t\t\tOpcao: ");
             scanf("%d", &opcaoDeJogabilidade);
             printf("\n\n\n");
             system("pause");
             system("cls");
-            if(opcaoDeJogabilidade == 1){
-
+            if(opcaoDeJogabilidade == 1) {
 
                 printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA PRETA:\n\n\t\t\t\t");
                 scanf("%s",dama.game1);
                 printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA BRANCA:\n\n\t\t\t\t ");
                 scanf("%s",dama.game2);
+                system("cls");
 
                 while(dama.pont_max < 12) {
                     jogador = 1; oposto = 2;
@@ -367,7 +346,7 @@ int main(int argc, char *argv[]) {
                 system("cls");
                 break;
             }
-            else if(opcaoDeJogabilidade == 2){
+            else if(opcaoDeJogabilidade == 2) {
 
                 printf("\n\n\t\tINFORME O NOME DO JOGADOR:\n\n\t\t\t\t");
                 scanf("%s",dama.game1);
@@ -380,24 +359,21 @@ int main(int argc, char *argv[]) {
                     jogador = 2; oposto = 1;
                     jogarComp(matriz, jogador, oposto);
                 }
-                system("cls");
 
+                system("cls");
                 ganhador(matriz);
-
                 system("pause");
                 system("cls");
                 break;
             }
-            else{
-                printf("\n\n\t\t**********OPCAO DE JOGABILIDADE INVALIDA**********\n\n\t\t\t\t");
+            else {
+                printf("\n\n\t\t********** OPCAO DE JOGABILIDADE INVALIDA! **********\n\n\t\t\t\t");
                 system("pause");
                 system("cls");
                 break;
             }
-
 
         case 2:
-
             printf("\n_____________________________O QUE EH O JOGO?_______________________________");
             printf("\n\n\t     O jogo de Damas eh constituido por um tabuleiro quadratico,\n\tdividido em 64 quadrados com 24 pecas, sendo 12 de cor branca\n\te 12 de cor preta. Exitem  8 linhas que estao na posicao vertical,\n\te com 8 colunas na posicao horizantal.\n");
             printf("\n_____________________________  O OBJETIVO  _______________________________");
@@ -410,16 +386,10 @@ int main(int argc, char *argv[]) {
             break;
 
         case 3:
-
-           
-            break;
-
-
-        case 4:
-            printf("\n\n\n\n\t\t\t  FIM DO JOGO\n\n\n\n\n");
+            printf("\n\n\n\n\t\t\t\tFIM DO JOGO\n\n\n\n\n");
             break;
     }
-  } while(opcao_selecionada != 4);
-      
+  } while(opcao_selecionada != 3);
+
   return 0;
 }
