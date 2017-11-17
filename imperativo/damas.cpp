@@ -1,57 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
+
+#include <bits/stdc++.h>
+
 #define N 8
 
-int XDamaL;
-int XDamaC;
-int ODamaL;
-int ODamaC;
-char DamaX;
-char DamaO;
-//Inicia Tabuleiro definindo espaços vazios e peças.
-char **intitialize();
+int XDamaL, XDamaC,ODamaL, ODamaC;
+char DamaX, DamaO;
 
-//imprime Matriz
-void printM(char **M);
 
-//Como o nome da função diz, MOVE A PEÇA e define o momento de comer a peça adversária.
-void movePeca(char **M, int i, int j, int lin, int col, char jogador);
-
-//define regras do jogo, como: evitar usar casas fora do tabuleiro, como a peça pode andar e comer.
-int step(char **M, int i, int j, int lin, int col, char jogador);
-
-/*
-Verifica se o jogo pode ou não continuar
-caso as peças acabem ou não possam mais se mover.
-*/
-int status(char **M);
-
-//Complemento status.
-int statusJogador(char **M, char jogador);
-
-/*Função que aplica a lógica do jogo, que alterna a rodada de cada jogador e
-que imprime o tabuleiro atualizado a cada rodada.
-*/
-void game();
-
-int main(void){
-
-    printf("\n\t__________________________________________________________\n");
-    printf("\t__________________________________________________________\n");
-    printf("\t__________________________________________________________\n");
-    printf("\t__________________                    ____________________\n");
-    printf("\t__________________                    ____________________\n");
-    printf("\t__________________   JOGO  DA  DAMA   ____________________\n");
-    printf("\t__________________                    ____________________\n");
-    printf("\t__________________________________________________________\n");
-    printf("\t__________________________________________________________\n");
-    printf("\t__________________________________________________________\n\n\n");
-
-  game();
-
-  return 0;
-}
-
+// Constroi o tabuleiro
 char **intitialize(){
   char **M;
   int i, j, k, l;
@@ -108,6 +64,7 @@ char **intitialize(){
   return M;
 }
 
+// imprime matriz
 void printM(char **M){
   
   int i, j;
@@ -145,6 +102,7 @@ int DamaVerifica(int i, int j,int lin,int col,char jogador){
 
 }
 
+//define regras do jogo, como: evitar usar casas fora do tabuleiro, como a peça pode andar e comer.
 int step(char **M, int i, int j, int lin, int col, char jogador){
 
 
@@ -154,13 +112,13 @@ int step(char **M, int i, int j, int lin, int col, char jogador){
   //limitando tabuleiro. -Funcionando.
   if(lin < 0 || lin >= N || col < 0 || col >= N)
         return 0;
-  //Checando se a peça que está na casa escolhida é a o jogador. -Funcionando.
+  //Checando se a peça que está na casa escolhida é a o jogador. 
     if(M[i][j] != jogador)
       return 0;
 
 
   //Peças Brancas.
-  //Proibindo peças de andarem para trás e para os lados. -Funcionando.
+  //Proibindo peças de andarem para trás e para os lados. 
     if(jogador == 'O'){
       if(lin >= i && (VDama==0 || VDama==2))
         return 0;
@@ -197,7 +155,7 @@ int step(char **M, int i, int j, int lin, int col, char jogador){
     }
 
   //Peças Pretas.
-  //Proibindo peças de andarem para trás e para os lados. -Funcionando.
+  //Proibindo peças de andarem para trás e para os lados. 
     if(jogador == 'X'){
       if(lin <= i && (VDama==0 || VDama==2))
         return 0;
@@ -237,7 +195,7 @@ int step(char **M, int i, int j, int lin, int col, char jogador){
 
   return 1;
 }
-
+//Complemento status.
 int statusJogador(char **M, char jogador){
   int i;
   for(i=0; i<N; i++)
@@ -247,6 +205,10 @@ int statusJogador(char **M, char jogador){
   return 0;
 }
 
+/*
+Verifica se o jogo pode ou não continuar
+caso as peças acabem ou não possam mais se mover.
+*/
 int status(char **M){
 
   /* -1 = Jogo continua
@@ -266,6 +228,7 @@ int status(char **M){
 
 }
 
+//Move a Peca
 void movePeca(char **M, int i, int j, int lin, int col, char jogador){
 
   int VDama;
@@ -363,7 +326,9 @@ void movePeca(char **M, int i, int j, int lin, int col, char jogador){
   }
 }
 
-
+/*Função que aplica a lógica do jogo, que alterna a rodada de cada jogador e
+que imprime o tabuleiro atualizado a cada rodada.
+*/
 
 void game(){
   char **M;
@@ -404,4 +369,89 @@ void game(){
   
   }
   printf("\n%s\n", msg[jogoAtivo]);
+}
+
+int main(void){
+	
+	  int opcao_selecionada, opcaoDeJogabilidade;
+	  char jogador1[30],jogador2[30];
+	  printf("\n\t__________________________________________________________\n");
+      printf("\t__________________________________________________________\n");
+      printf("\t__________________        UFCG        ____________________\n");
+      printf("\t__________________    PROJETO APLP    ____________________\n");
+      printf("\t__________________                    ____________________\n");
+      printf("\t__________________        DAMAS       ____________________\n");
+      printf("\t__________________                    ____________________\n");
+      printf("\t__________________                    ____________________\n");
+      printf("\t__________________________________________________________\n");
+      printf("\t__________________________________________________________\n\t\t\t\t\t\n");
+       do {
+      printf("\tEscolha uma das opcoes abaixo:\n\n");
+      printf("\t 1- Jogar.\n\t 2- Ajuda.\n\t 3- Sair.\n\n");
+      printf("\tOpcao: ");
+
+      scanf("%d", &opcao_selecionada);
+   
+
+      switch(opcao_selecionada) {
+        case 1:	
+        
+			printf("\n\n\t\t\tSelecione o modo de jogo:\n");
+            printf("\n\t\t\t1- Dois Jogadores.\n\t\t\t2- Jogar contra a maquina.\n\n");
+            printf("\n\t\t\tOpcao: ");
+            scanf("%d", &opcaoDeJogabilidade);
+            printf("\n\n\n");
+            
+            if(opcaoDeJogabilidade == 1){
+
+
+                printf("\n\n\t\tINFORME O NOME DO JOGADOR 1:\n\n\t\t\t\t");
+                scanf("%s", jogador1);
+                printf("\n\n\t\tINFORME O NOME DO JOGADOR 2:\n\n\t\t\t\t ");
+                scanf("%s", jogador2);
+				game();
+               
+
+                break;
+            }
+            else if(opcaoDeJogabilidade == 2){
+
+                printf("\n\n\t\tINFORME O NOME DO JOGADOR 1:\n\n\t\t\t\t");
+                scanf("%s", jogador1);
+                
+                jogador2[0] = 'p';
+                jogador2[1] = 'c';
+
+                game();
+                break;
+            }
+            else{
+                printf("\n\n\t\t**********OPCAO DE JOGABILIDADE INVALIDA**********\n\n\t\t\t\t");
+               
+                break;
+            }
+			
+            
+        case 2:
+
+            printf("\n_____________________________O QUE EH O JOGO?_______________________________");
+            printf("\n\n\t     O jogo de Damas eh constituido por um tabuleiro quadratico,\n\tdividido em 64 quadrados com 24 pecas, sendo 12 de cor branca\n\te 12 de cor preta. Exitem  8 linhas que estao na posicao vertical,\n\te com 8 colunas na posicao horizantal.\n");
+            printf("\n_____________________________  O OBJETIVO  _______________________________");
+            printf("\n\n\t      Comer o maior numero de pecas possiveis do adversario. Quem \n\tdurante os 3 minutos tiver mais pecas, eh o vencedor!\n\n");
+            printf("\n______________________________REGRAS O JOGO_________________________________");
+            printf("\n\n\t1- Nao eh permitido comer para tras.\n\t2- Pode comer uma peca, nao duas de uma vez.\n\t3- Soh anda uma casa por vez.\n\t4- O Jogo dura 3 Minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n");
+            printf("____________________________________________________________________________\n\n");
+           
+            break;
+
+        
+        case 3:
+            printf("\n\n\n\n\t\t\t  FIM DO JOGO\n\n\n\n\n");
+            break;
+    }
+  } while(opcao_selecionada != 3);
+
+ 
+
+  return 0;
 }

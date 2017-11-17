@@ -17,7 +17,6 @@ struct {
 
 
   do {
-    system("cls");
     if (jogador == 1)
        printf("\n\n----------------    A VEZ EH A DO JOGADOR PECA PRETA  ----------\n\n\n\n");
     if (jogador == 2)
@@ -105,7 +104,7 @@ struct {
 
   else printf("\n\n\t\t__________MOVIMENTO INVALIDO!!_________\n\t\t_________JOGUE NOVAMENTE...________\n");
   }
-  system("pause");
+  
   } while(opcao != 1);
 }
 
@@ -262,7 +261,7 @@ void jogarComp(char matriz[8][8], char jogador, int oposto) {
 
   else printf("\n\n\t\t__________MOVIMENTO INVALIDO!!_________\n\t\t_________JOGUE NOVAMENTE...________\n");
   }
-  system("pause");
+ 
   } while(opcao != 1);
 }
 
@@ -412,11 +411,7 @@ int main(int argc, char *argv[]) {
 
         case 3:
 
-            system("pause");
-            system("cls");
-
-            system("pause");
-            system("cls");
+           
             break;
 
 
@@ -425,6 +420,6 @@ int main(int argc, char *argv[]) {
             break;
     }
   } while(opcao_selecionada != 4);
-      system("PAUSE");
+      
   return 0;
 }
