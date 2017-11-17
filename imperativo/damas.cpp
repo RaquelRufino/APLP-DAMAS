@@ -13,6 +13,9 @@ int ODamaL;
 int ODamaC;
 char DamaX;
 char DamaO;
+
+int pontuacao_maxima;
+
 //Inicia Tabuleiro definindo espaços vazios e peças.
 char **intitialize();
 
@@ -192,7 +195,7 @@ int step(char **M, int i, int j, int lin, int col, char jogador) {
       if (M[lin][col] == 'O' || M[lin][col] == 'X')
           return 0;
 
-      if (VDama==1) {
+      if (VDama == 1) {
         ODamaL = lin;
         ODamaC = col;
       }
@@ -317,12 +320,10 @@ void movePeca(char **M, int i, int j, int lin, int col, char jogador){
         if(M[lin-1][col+1] == 'X')
           M[lin-1][col+1] = ' ';
       }
-
     }
-
   }
 
-  if(jogador == 'X'){
+  if (jogador == 'X') {
 
     if (VDama==0){
       if(lin == i + 2 && col == j-2){
@@ -333,7 +334,7 @@ void movePeca(char **M, int i, int j, int lin, int col, char jogador){
           M[lin-1][col-1] = ' ';
       }
 
-    }else {
+    } else {
 
       if (lin < i && col < j){
         if(M[lin+1][col+1] == 'O')
@@ -419,24 +420,212 @@ void game() {
   printf("\n%s\n", msg[jogoAtivo]);
 }
 
+void game_pc() {
+  int i, g, j, l, c, li, co, opcao = 0;
+  int cAux, lAux, cFim, lFim, escolhaRealizada = 0;
+
+  intitialize();
+
+  char **matriz;
+  matriz = intitialize();
+  char jogador = 'X';
+  char pc = 'O';
+
+  do {
+    system("cls");
+    if (jogador == 'O')
+       printf("\n\n----------------    A VEZ EH DO JOGADOR PECA BRANCA  ----------\n\n\n\n");
+    if (jogador == 'X')
+       printf("\n\n----------------    A VEZ EH DO JOGADOR PECA PRETA  ------------\n\n\n\n");
+       printf("\t \t\t   0 1 2 3 4 5 6 7 \n");
+
+    int linhasPossiveis[12] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    int colunasPossiveis[12] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    int index = 0;
+
+    for(i = 0; i < 8; i++) {
+       printf("\n\t\t\t%d  ", i);
+
+       for(j = 0; j < 8; j++) {
+           printf("%c ", matriz[i][j]);
+           if(matriz[i][j] == jogador && i != 0){
+                linhasPossiveis[index] = i;
+                colunasPossiveis[index] = j;
+                index = index + 1;
+           }
+       }
+    }
+
+    for (g = 0; g < 12; g++) {
+        cAux = linhasPossiveis[g];
+        lAux = colunasPossiveis[g];
+        lFim = lAux-1;
+        if (lAux != -1 && cAux != -1 && lFim > 0) {
+
+            if (cAux+1 < 7 && matriz[lFim][cAux+1] == pc) {
+                if(lFim-1 >= 0 && cAux+2 < 8 && matriz[lFim-1][cAux+2] == 0) {
+                    l = lAux;
+                    c = cAux;
+                    li = lFim - 1;
+                    co = cAux + 2;
+                    escolhaRealizada = 1;
+                    break;
+                }
+            }
+            else if (cAux-1 > 0 && matriz[lFim][cAux-1] == pc) {
+                if (lFim-1 >= 0 && cAux-2 >= 0 && matriz[lFim-1][cAux-2] == 0) {
+                    l = lAux;
+                    c = cAux;
+                    li = lFim - 1;
+                    co = cAux - 2;
+                    escolhaRealizada = 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (escolhaRealizada == 0) {
+        for(g = 0; g < 12; g++) {
+            cAux = linhasPossiveis[g];
+            lAux = colunasPossiveis[g];
+            lFim = lAux-1;
+            if(lAux != -1 && cAux != -1 && lFim >= 0) {
+                if(cAux+1 < 8 && matriz[lFim][cAux + 1] == 0) {
+                    l = lAux;
+                    c = cAux;
+                    li = lFim;
+                    co = cAux + 1;
+                    escolhaRealizada = 1;
+                    break;
+                }
+                else if(cAux-1 >= 0 && matriz[lFim][cAux - 1] == 0) {
+                    l = lAux;
+                    c = cAux;
+                    li = lFim;
+                    co = cAux - 1;
+                    escolhaRealizada = 1;
+                    break;
+                }
+            }
+        }
+    }
+    printf("\n\n\n\n\t******************  MOVIMENTO DA MAQUINA  **********************\n");
+    printf("\n\tDE: LINHA - %d COLUNA - %d\n", l, c);
+    printf("\n\tPARA: LINHA - %d COLUNA - %d\n\n", li, co);
+
+  if ((li+co) % 2 == 0) {
+
+     if((jogador == 1 && l < li) || (jogador == 2 && l > li)) {
+
+        if (c-1 == co|| c+1 == co) {
+            if(co == c-1) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                opcao++;
+            }
+            if(co == c+1) {
+                matriz[li][co] = pc;
+                matriz[l][c] = 0;
+                opcao++;
+            }
+        }
+
+        if (matriz[l+1][c+1] == pc) {
+            if(c+2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                opcao++;
+                matriz[l+1][c+1] = 0;
+            }
+        }
+
+        if (matriz[l+1][c-1] == pc) {
+            if(c-2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                matriz[l+1][c-1] = 0;
+                opcao++;
+            }
+        }
+
+        if (matriz[l-1][c+1] == pc) {
+            if(c+2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                opcao++;
+                matriz[l-1][c+1] = 0;
+            }
+        }
+
+        if (matriz[l-1][c-1] == pc) {
+            if(c-2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                matriz[l-1][c-1] = 0;
+                opcao++;
+            }
+        }
+  }
+
+  else printf("\n\n\t\t__________MOVIMENTO INVALIDO!!_________\n\t\t_________JOGUE NOVAMENTE...________\n");
+  }
+    system("pause");
+  } while(opcao != 1);
+
+}
+
+void ganhador(char **matriz) {
+    int total_pecas = 12;
+    int qtd_pretas, qtd_brancas = 0;
+    int i, j;
+
+    // QTD DE PECAS NO TABULEIRO
+    for (i = 0; i < 8; i++)
+       for (j = 0; j < 8; j++) {
+         if (matriz[i][j] == 'X')
+         qtd_pretas++;
+         if(matriz[i][j] == 'O')
+         qtd_brancas++;
+       }
+
+       // VERIFICA QUEM TEM MAIS PECAS, MOSTRANDO QUEM EH O VENCEDOR...
+    if(qtd_pretas > qtd_brancas) {
+       printf("\n\tVENCEDOR...-> JOGADOR DE PECAS PRETAS!"); // JOGADOR DE PECAS PRETAS.
+       pontuacao_maxima = total_pecas - qtd_brancas;
+    }
+    else {
+       if (qtd_pretas < qtd_brancas) {
+        printf("\n\tVENCEDOR...-> JOGADOR DE PECAS BRANCAS!");// JOGADOR DE PECAS BRANCAS.
+        pontuacao_maxima = total_pecas - qtd_pretas;
+       }
+       else {
+        printf("\n\tEmpate!\n\t"); // EMPATE
+        pontuacao_maxima = qtd_brancas; // PONTUACAO MAXIMA
+       }
+    }
+}
+
 int main(void) {
 
     int opcao_selecionada;
     int opcao_jogabilidade;
-    int pontuacao_maxima;
     string jogador_peca_preta;
     string jogador_peca_branca;
+
+    char **matriz;
+    matriz = intitialize();
 
     do {
 
         printf("\n\t__________________________________________________________\n");
         printf("\t__________________________________________________________\n");
-        printf("\t__________________________________________________________\n");
         printf("\t__________________                    ____________________\n");
+        printf("\t__________________        UFCG        ____________________\n");
         printf("\t__________________                    ____________________\n");
-        printf("\t__________________   JOGO  DA  DAMA   ____________________\n");
+        printf("\t__________________    PROJETO APLP    ____________________\n");
+        printf("\t__________________       DAMAS        ____________________\n");
         printf("\t__________________                    ____________________\n");
-        printf("\t__________________________________________________________\n");
         printf("\t__________________________________________________________\n");
         printf("\t__________________________________________________________\n\t\t\t\t\t\n");
         printf("\tEscolha uma das op%c%ces abaixo:\n\n",135,228);
@@ -469,9 +658,10 @@ int main(void) {
                 printf("\n\n\t\tINFORME O NOME DO JOGADOR DE PECAS PRETAS:\n\n\t\t\t\t ");
                 cin >> jogador_peca_preta;
 
-                // LACO AQUI
-                game();
-
+                while (pontuacao_maxima < 12) {
+                    game();
+                }
+                ganhador(matriz);
                 system("pause");
                 system("cls");
                 break;
@@ -485,8 +675,10 @@ int main(void) {
                 jogador_peca_branca = "PC-GAMER";
                 printf("\n\n\t\tPC-GAMER\n\n\t\t\t\t");
 
-                // game_with_pc();
-
+                while (pontuacao_maxima < 12) {
+                    game_pc();
+                }
+                ganhador(matriz);
                 system("pause");
                 system("cls");
                 break;
@@ -508,7 +700,7 @@ int main(void) {
             printf("\n_____________________________  O OBJETIVO  _______________________________");
             printf("\n\n\t      Comer o maior numero de pecas possiveis do adversario. Quem \n\tdurante os 3 minutos tiver mais pecas, eh o vencedor!\n\n");
             printf("\n______________________________REGRAS O JOGO_________________________________");
-            printf("\n\n\t1- Nao eh permitido comer para tras.\n\t2- Pode comer uma peca, nao duas de uma vez.\n\t3- Soh anda uma casa por vez.\n\t4- O Jogo dura 3 Minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n");
+            printf("\n\n\t1- Nao eh permitido comer para tras.\n\t2- Pode comer uma peca, nao duas de uma vez.\n\t3- Soh anda uma casa por vez.\n\t4- Nao eh permitido jogar com uma peca do adversario.\n");
             printf("____________________________________________________________________________\n\n");
             system("pause");
             system("cls");

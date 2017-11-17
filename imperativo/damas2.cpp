@@ -253,7 +253,7 @@ void ganhador(char matriz[8][8]) {
     for (i = 0; i < 8; i++)
        for (j = 0; j < 8; j++) {
          if (matriz[i][j] == 2)
-         dama.cont1++;
+         dama.cont2++;
          if(matriz[i][j] == 1)
          dama.cont2++;
        }
