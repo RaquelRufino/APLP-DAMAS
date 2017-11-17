@@ -331,7 +331,7 @@ void movePeca(char **M, int i, int j, int lin, int col, char jogador){
 void gamepc(char **M){
 	int i, j, k;
 	for(i=0; i < N; i++) {
-		for(k=0; k < N; k++) {
+		for(k=0; k < 8; k++) {
 			if(M[i][k] == 'X') {
 				if(M[i+1][k+1] == 'O' && M[i+2][k+2] == ' ') {
 						movePeca(M, i, k, i+2, k+2, 'X');
@@ -343,7 +343,7 @@ void gamepc(char **M){
 			}
 		}
 
-		for(j=0; j < N; j++) {
+		for(j=0; j < 8; j++) {
 			if(M[i][j] == 'X') {
 				if(M[i+1][j+1] == ' ') {
 					movePeca(M, i, j, i+1, j+1, 'X');
