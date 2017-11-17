@@ -120,6 +120,163 @@ struct {
   } while(opcao != 1); //TERMINA O LACO JOGO DA DAMA
 }
 
+void jogarComp(char matriz[8][8], char jogador, int oposto) {
+  int i, g, j, l, c, li, co, opcao = 0, cAux, lAux, cFim, lFim, escolhaRealizada = 0;
+
+
+  // LACO DO JOGO DA DAMA...
+  do {
+    system("cls");
+    if (jogador == 1)// JOGADOR PECA PRETA
+       printf("\n\n----------------    A VEZ EH A DO JOGADOR PECA PRETA  ----------\n\n\n\n");
+    if (jogador == 2)// JOGADOR PECA BRANCA
+       printf("\n\n----------------    A VEZ EH A DO JOGADOR PECA BRANCA  ------------\n\n\n\n");
+       printf("\t \t\t   0 1 2 3 4 5 6 7 \n");// COORDENADAS DO TABULEIRO
+
+    int linhasPossiveis[12] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    int colunasPossiveis[12] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    int index = 0;
+
+    // DESENHO DO TABULEIRO, MATRIZ E OS INDICES...
+    for(i = 0; i < 8; i++) {
+       printf("\n\t\t\t%d  ", i);
+
+       for(j = 0; j < 8; j++){
+           printf("%c ", matriz[i][j]);
+           if(matriz[i][j] == jogador && i != 0){
+                linhasPossiveis[index] = i;
+                colunasPossiveis[index] = j;
+                index = index + 1;
+           }
+       }
+    }
+
+    //testes
+    for(g = 0; g < 12; g++){
+        cAux = linhasPossiveis[g];
+        lAux = colunasPossiveis[g];
+        lFim = lAux-1;
+        if(lAux != -1 && cAux != -1 && lFim > 0){
+            //DA PREFERENCIA A POSICOES ONDE PODE MATAR ALGUEM
+            if(cAux+1 < 7 && matriz[lFim][cAux+1] == oposto){
+                if(lFim-1 >= 0 && cAux+2 < 8 && matriz[lFim-1][cAux+2] == 0){
+                    l = lAux;
+                    c = cAux;
+                    li = lFim - 1;
+                    co = cAux + 2;
+                    escolhaRealizada = 1;
+                    break;
+                }
+            }
+            else if(cAux-1 > 0 && matriz[lFim][cAux-1] == oposto){
+                if(lFim-1 >= 0 && cAux-2 >= 0 && matriz[lFim-1][cAux-2] == 0){
+                    l = lAux;
+                    c = cAux;
+                    li = lFim - 1;
+                    co = cAux - 2;
+                    escolhaRealizada = 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    if(escolhaRealizada == 0){
+        for(g = 0; g < 12; g++){
+            cAux = linhasPossiveis[g];
+            lAux = colunasPossiveis[g];
+            lFim = lAux-1;
+            if(lAux != -1 && cAux != -1 && lFim >= 0){
+                if(cAux+1 < 8 && matriz[lFim][cAux + 1] == 0){
+                    l = lAux;
+                    c = cAux;
+                    li = lFim;
+                    co = cAux + 1;
+                    escolhaRealizada = 1;
+                    break;
+                }
+                else if(cAux-1 >= 0 && matriz[lFim][cAux - 1] == 0){
+                    l = lAux;
+                    c = cAux;
+                    li = lFim;
+                    co = cAux - 1;
+                    escolhaRealizada = 1;
+                    break;
+                }
+            }
+        }
+    }
+
+
+    // ESCOLHE A PECA QUE VAI JOGAR...
+    printf("\n\n\n\n\t***************  MOVIMENTO DA MAQUINA  **********************");
+    printf("\n\tDE: LINHA - %d COLUNA - %d\n", l, c);
+    printf("\n\tPARA: LINHA - %d COLUNA - %d\n", li, co);
+
+
+  // CONDICAO: SOH ANDA QUANDO A SOMA DOS INDICES FOREM PAR
+  if ((li+co) % 2 == 0) {
+     // FAZ COM QUE A PECA ANDE SO UMA CASA, E JOGUE UMA PECA DE CADA VEZ (PRETA OU BRANCA)
+     if((jogador == 1 && l < li) || (jogador == 2 && l > li)) {
+
+      // ESSAS SAO AS CONDICOES PARA COMER UMA PECA...
+
+        if (c-1 == co|| c+1 == co) {
+            if(co == c-1) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                opcao++;
+            }
+            if(co == c+1) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                opcao++;
+            }
+        }
+
+        if (matriz[l+1][c+1] == oposto) {
+            if(c+2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                opcao++;
+                matriz[l+1][c+1] = 0;
+            }
+        }
+
+        if (matriz[l+1][c-1] == oposto) {
+            if(c-2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                matriz[l+1][c-1] = 0;
+                opcao++;
+            }
+        }
+
+        if (matriz[l-1][c+1] == oposto) {
+            if(c+2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                opcao++;
+                matriz[l-1][c+1] = 0;
+            }
+        }
+
+        if (matriz[l-1][c-1]==oposto) {
+            if(c-2 == co) {
+                matriz[li][co] = jogador;
+                matriz[l][c] = 0;
+                matriz[l-1][c-1] = 0;
+                opcao++;
+            }
+        }
+  }
+
+  else printf("\n\n\t\t__________MOVIMENTO INVALIDO!!_________\n\t\t_________JOGUE NOVAMENTE...________\n");//CASO O JOGADOR ESCOLHA UMA POCISAO INVALIDA
+  }
+  system("pause");
+  } while(opcao != 1); //TERMINA O LACO JOGO DA DAMA
+}
+
 // char game1[20], game2[20]; //NOME DOS JOGADORES
 
 // FUNCAO QUE DEFINE O GANHADOR...
@@ -170,7 +327,7 @@ void escreve(void) {
 int main(int argc, char *argv[]) {
     // DECLARACAO DOS CARACTERES NO TABULEIRO... QUEM ESTA VAZIO... QUEM E PRETA E BRANCA... E OS ESPACOS LIVRES
     char matriz[8][8];
-    int i, j, jogador = 1, oposto = 2, opcao = 0, opcao_selecionada;
+    int i, j, jogador = 1, oposto = 2, opcao = 0, opcao_selecionada, opcaoDeJogabilidade;
     dama.cont1 = dama.cont2 = 0;
     historico = fopen("Historico_dama.bin", "ab+");
 
@@ -208,32 +365,67 @@ int main(int argc, char *argv[]) {
         case 1:
             //system("color 10");
             desenho();
-            printf("\n\n\t\t\tENTER PARA CONTINUAR.....");
+            printf("\n\n\t\t\tSelecione o modo de jogo:\n");
+            printf("\n\t\t\t1- Dois Jogadores.\n\t\t\t2- Jogar contra a maquina.\n\n");
+            printf("\n\t\t\tOp%c%co: ", 135, 198);
+            scanf("%d", &opcaoDeJogabilidade);
             printf("\n\n\n");
             system("pause");
             system("cls");
-            //system("color 50");
-            // NOME DOS JOGADORES...
-            printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA PRETA:\n\n\t\t\t\t");
-            scanf("%s",dama.game1);
-            printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA BRANCA:\n\n\t\t\t\t ");
-            scanf("%s",dama.game2);
+            if(opcaoDeJogabilidade == 1){
+                //system("color 50");
+                // NOME DOS JOGADORES...
+                printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA PRETA:\n\n\t\t\t\t");
+                scanf("%s",dama.game1);
+                printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA BRANCA:\n\n\t\t\t\t ");
+                scanf("%s",dama.game2);
 
-            while(dama.pont_max < 12) {
-                jogador = 1; oposto = 2;
-                jogar(matriz, jogador, oposto);
-                jogador = 2; oposto = 1;
-                jogar(matriz, jogador, oposto);
+                while(dama.pont_max < 12) {
+                    jogador = 1; oposto = 2;
+                    jogar(matriz, jogador, oposto);
+                    jogador = 2; oposto = 1;
+                    jogar(matriz, jogador, oposto);
+                }
+                system("cls");
+                desenho4(); // CHAMADA DA FUNCAO DESENHO BONECO.
+                // printf("\n\t\t.......... PASSARAM-SE 3 MINUTOS: FIM DO JOGO! ...........\n\n\n"); // APARECE NA TELA QUANDO TERMINA O TEMPO...
+                ganhador(matriz); // CHAMADA DA FUNCAO GANHADOR...
+                registro(); // CHAMADA DA FUNCAO REGITRO... RESPONSAVEL POR GRAVAR AS INFORMACOES.
+
+                system("pause");
+                system("cls");
+                break;
             }
-            system("cls");
-            desenho4(); // CHAMADA DA FUNCAO DESENHO BONECO.
-            // printf("\n\t\t.......... PASSARAM-SE 3 MINUTOS: FIM DO JOGO! ...........\n\n\n"); // APARECE NA TELA QUANDO TERMINA O TEMPO...
-            ganhador(matriz); // CHAMADA DA FUNCAO GANHADOR...
-            registro(); // CHAMADA DA FUNCAO REGITRO... RESPONSAVEL POR GRAVAR AS INFORMACOES.
+            else if(opcaoDeJogabilidade == 2){
+                //system("color 50");
+                // NOME DOS JOGADORES...
+                printf("\n\n\t\tINFORME O NOME DO JOGADOR:\n\n\t\t\t\t");
+                scanf("%s",dama.game1);
+                printf("\n\n\t\tINFORME O NOME DO JOGADOR PECA BRANCA:\n\n\t\t\t\t ");
+                scanf("%s",dama.game2);
 
-            system("pause");
-            system("cls");
-            break;
+                while(dama.pont_max < 12) {
+                    jogador = 1; oposto = 2;
+                    jogar(matriz, jogador, oposto);
+                    jogador = 2; oposto = 1;
+                    jogarComp(matriz, jogador, oposto);
+                }
+                system("cls");
+                desenho4(); // CHAMADA DA FUNCAO DESENHO BONECO.
+                // printf("\n\t\t.......... PASSARAM-SE 3 MINUTOS: FIM DO JOGO! ...........\n\n\n"); // APARECE NA TELA QUANDO TERMINA O TEMPO...
+                ganhador(matriz); // CHAMADA DA FUNCAO GANHADOR...
+                registro(); // CHAMADA DA FUNCAO REGITRO... RESPONSAVEL POR GRAVAR AS INFORMACOES.
+
+                system("pause");
+                system("cls");
+                break;
+            }
+            else{
+                printf("\n\n\t\t**********OPCAO DE JOGABILIDADE INVALIDA**********\n\n\t\t\t\t");
+                system("pause");
+                system("cls");
+                break;
+            }
 
         // MOSTRA NA TELA AS INFORMACOES DO JOGO...
         case 2:
