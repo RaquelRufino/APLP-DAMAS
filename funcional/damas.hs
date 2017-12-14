@@ -17,9 +17,13 @@ mapMatrix value	| (value == "O") = " O"
 				| (value == "X") = " X"
 				| otherwise = " ~"
 
-changePosition :: [[String]] -> Int -> Int -> Int -> Int -> String -> [[String]]
-changePosition oldM oldL oldC newL newC player newM
+changePosition :: Int -> Int -> String -> [[String]] -> [[String]]
+changePosition x y value matrix = [ [ verifyPosition  x y m n value ( ( matrix !! n ) !! m) | m <- [0..7] ] | n <- [0..7] ]
+
+verifyPosition :: Int -> Int -> Int -> Int -> String -> String -> String
+verifyPosition x y m n value old_value	| x == n && y == m = value
+										| otherwise = old_value
 
 main = do
-	let matrix = showMatrix(initialize 8 8)
+	let matrix = showMatrix (changePositionO 3 0 "O" (changePositionO 2 1 "~" (initialize 8 8)))
 	putStrLn(matrix)
