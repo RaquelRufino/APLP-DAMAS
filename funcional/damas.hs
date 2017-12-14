@@ -10,7 +10,7 @@ mapValue x y	| (y >= 0 && y <= 2) && (y `mod` 2 /= 0 && x `mod` 2 == 0) = "O"
 				| otherwise = " " 
 
 showMatrix :: [[String]] -> String
-showMatrix m = concat (concat [ [ mapMatrix y | y <- x] ++ ["\n"]| x <- m])
+showMatrix m = concat ( concat [ [ mapMatrix y | y <- x] ++ ["\n"]| x <- m])
 
 mapMatrix :: String -> String
 mapMatrix value	| (value == "O") = " O"
@@ -21,9 +21,13 @@ changePosition :: Int -> Int -> String -> [[String]] -> [[String]]
 changePosition x y value matrix = [ [ verifyPosition  x y m n value ( ( matrix !! n ) !! m) | m <- [0..7] ] | n <- [0..7] ]
 
 verifyPosition :: Int -> Int -> Int -> Int -> String -> String -> String
-verifyPosition x y m n value old_value	| x == n && y == m = value
+verifyPosition x y m n value old_value	| (x == n && y == m) = value
 										| otherwise = old_value
 
 main = do
-	let matrix = showMatrix (changePositionO 3 0 "O" (changePositionO 2 1 "~" (initialize 8 8)))
-	putStrLn(matrix)
+	let matrix = (initialize 8 8)
+	let viewMatrix = showMatrix (matrix)
+	putStrLn(viewMatrix)
+	let moveOnMatrix = changePosition 3 0 "O" (changePosition 2 1 "~" matrix)
+	let viewMoveOnMatrix = showMatrix (moveOnMatrix)
+	putStrLn(viewMoveOnMatrix)
