@@ -18,16 +18,21 @@ mapMatrix value	| (value == "O") = " O"
 				| otherwise = " ~"
 
 changePosition :: Int -> Int -> String -> [[String]] -> [[String]]
-changePosition x y value matrix = [ [ verifyPosition  x y m n value ( ( matrix !! n ) !! m) | m <- [0..7] ] | n <- [0..7] ]
+changePosition x y value matrix = [ [ verifyPosition x y m n value ( ( matrix !! n ) !! m) | m <- [0..7] ] | n <- [0..7] ]
 
 verifyPosition :: Int -> Int -> Int -> Int -> String -> String -> String
 verifyPosition x y m n value old_value	| (x == n && y == m) = value
 										| otherwise = old_value
 
+verifyPlay :: Int -> Int -> Int -> Int -> String -> [[String]] -> [[String]]
+verifyPlay oldL oldC newL newC value matrix	| ((oldC - newC == 1) && (oldL - newL == -1) && (( ( matrix !! newL ) !! newC) == "~")) || ((oldL - newL == 1) && (oldC - newC == -1) && (( ( matrix !! newL ) !! newC) == "~")) = changePosition newL newC value matrix
+											| otherwise = matrix
+
+main :: IO()
 main = do
 	let matrix = (initialize 8 8)
 	let viewMatrix = showMatrix (matrix)
 	putStrLn(viewMatrix)
-	let moveOnMatrix = changePosition 3 0 "O" (changePosition 2 1 "~" matrix)
+	let moveOnMatrix = verifyPlay 2 1 3 0 "X" (changePosition 2 1 "~" matrix)
 	let viewMoveOnMatrix = showMatrix (moveOnMatrix)
 	putStrLn(viewMoveOnMatrix)
