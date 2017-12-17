@@ -58,13 +58,14 @@ eatToLeftX oldL oldC newL newC matrix	| ((oldL - newL == 2) && (oldC - newC == 2
 					| otherwise = False
 
 makePlay :: Int -> Int -> Int -> Int -> String -> [[String]] -> [[String]]
-makePlay oldL oldC newL newC value matrix	| ((verifyIndex oldL oldC newL newC) && ((( matrix !! oldL ) !! oldC) == " ")) = error "Movimento inválido"
-						| ((verifyIndex oldL oldC newL newC) && (moveToLeftOrRightO oldL oldC newL newC matrix)) = changePosition newL newC value (changePosition oldL oldC " " matrix)
-						| ((verifyIndex oldL oldC newL newC) && (eatToRightO oldL oldC newL newC matrix)) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
-						| ((verifyIndex oldL oldC newL newC) && (eatToLeftO oldL oldC newL newC matrix)) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
-						| ((verifyIndex oldL oldC newL newC) && (moveToLeftOrRightX oldL oldC newL newC matrix)) = changePosition newL newC value (changePosition oldL oldC " " matrix)
-						| ((verifyIndex oldL oldC newL newC) && (eatToRightX oldL oldC newL newC matrix)) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
-						| ((verifyIndex oldL oldC newL newC) && (eatToLeftX oldL oldC newL newC matrix)) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
+makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL newC)) = error "Movimento inválido"
+						| ((( matrix !! oldL ) !! oldC) == " ") = error "Movimento inválido"
+						| (moveToLeftOrRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
+						| (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
+						| (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
+						| (moveToLeftOrRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
+						| (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
+						| (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
 						| otherwise = error "Movimento inválido"
 
 main :: IO()
