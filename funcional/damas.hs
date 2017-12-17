@@ -25,7 +25,7 @@ verifyPosition x y m n value old_value	| (x == n && y == m) = value
 										| otherwise = old_value
 
 verifyPlay :: Int -> Int -> Int -> Int -> String -> [[String]] -> [[String]]
-verifyPlay oldL oldC newL newC value matrix	| ((oldC - newC == 1) && (oldL - newL == -1) && (( ( matrix !! newL ) !! newC) == "~")) || ((oldL - newL == 1) && (oldC - newC == -1) && (( ( matrix !! newL ) !! newC) == "~")) = changePosition newL newC value matrix
+verifyPlay oldL oldC newL newC value matrix	| ((oldC - newC == 1) && (oldL - newL == -1) && (( ( matrix !! newL ) !! newC) == " ")) || ((oldL - newL == -1) && (oldC - newC == -1) && (( ( matrix !! newL ) !! newC) == " ")) = changePosition newL newC value (changePosition oldL oldC " " matrix)
 											| otherwise = matrix
 
 main :: IO()
@@ -33,6 +33,7 @@ main = do
 	let matrix = (initialize 8 8)
 	let viewMatrix = showMatrix (matrix)
 	putStrLn(viewMatrix)
-	let moveOnMatrix = verifyPlay 2 1 3 0 "X" (changePosition 2 1 "~" matrix)
-	let viewMoveOnMatrix = showMatrix (moveOnMatrix)
+	let moveOnMatrix = verifyPlay 2 1 3 0 "O" matrix
+	let moveOnMatrix2 = verifyPlay 3 0 4 1 "O" moveOnMatrix
+	let viewMoveOnMatrix = showMatrix (moveOnMatrix2)
 	putStrLn(viewMoveOnMatrix)
