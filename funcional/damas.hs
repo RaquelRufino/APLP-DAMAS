@@ -25,9 +25,12 @@ verifyPosition x y m n value old_value	| (x == n && y == m) = value
 										| otherwise = old_value
 
 verifyPlay :: Int -> Int -> Int -> Int -> String -> [[String]] -> [[String]]
-verifyPlay oldL oldC newL newC value matrix	| ((oldC - newC == 1) && (oldL - newL == -1) && (( ( matrix !! newL ) !! newC) == " ")) || ((oldL - newL == -1) && (oldC - newC == -1) && (( ( matrix !! newL ) !! newC) == " ")) = changePosition newL newC value (changePosition oldL oldC " " matrix)
-											| ((oldC - newC == 2) && (oldL - newL == -2) && (( ( matrix !! newL ) !! newC) == " ") && (( ( matrix !! (newL - 1) ) !! (newC + 1)) == "X")) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
+verifyPlay oldL oldC newL newC value matrix	| ((oldL - newL == -1) && (oldC - newC == 1) && (( ( matrix !! newL ) !! newC) == " ")) || ((oldL - newL == -1) && (oldC - newC == -1) && (( ( matrix !! newL ) !! newC) == " ")) = changePosition newL newC value (changePosition oldL oldC " " matrix)
+											| ((oldL - newL == -2) && (oldC - newC == 2) && (( ( matrix !! newL ) !! newC) == " ") && (( ( matrix !! (newL - 1) ) !! (newC + 1)) == "X")) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
 											| ((oldL - newL == -2) && (oldC - newC == -2) && (( ( matrix !! newL ) !! newC) == " ") && (( ( matrix !! (newL - 1) ) !! (newC - 1)) == "X")) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
+											| ((oldL - newL == 1) && (oldC - newC == -1) && (( ( matrix !! newL ) !! newC) == " ")) || ((oldL - newL == 1) && (oldC - newC == 1) && (( ( matrix !! newL ) !! newC) == " ")) = changePosition newL newC value (changePosition oldL oldC " " matrix)
+											| ((oldL - newL == 2) && (oldC - newC == -2) && (( ( matrix !! newL ) !! newC) == " ") && (( ( matrix !! (newL + 1) ) !! (newC - 1)) == "O")) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
+											| ((oldL - newL == 2) && (oldC - newC == 2) && (( ( matrix !! newL ) !! newC) == " ") && (( ( matrix !! (newL + 1) ) !! (newC + 1)) == "O")) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
 											| otherwise = matrix
 
 main :: IO()
@@ -35,8 +38,8 @@ main = do
 	let matrix = (initialize 8 8)
 	let viewMatrix = showMatrix (matrix)
 	putStrLn(viewMatrix)
-	let moveOnMatrix = verifyPlay 2 5 3 4 "O" matrix
-	let moveOnMatrix2 = changePosition 4 3 "X" (changePosition 5 2 " " moveOnMatrix)
-	let moveOnMatrix3 = verifyPlay 3 4 5 2 "O" moveOnMatrix2
+	let moveOnMatrix1 = verifyPlay 2 1 3 2 "O" matrix
+	let moveOnMatrix2 = verifyPlay 5 4 4 3 "X" moveOnMatrix1
+	let moveOnMatrix3 = verifyPlay 4 3 2 1 "X" moveOnMatrix2
 	let viewMoveOnMatrix = showMatrix (moveOnMatrix3)
 	putStrLn(viewMoveOnMatrix)
