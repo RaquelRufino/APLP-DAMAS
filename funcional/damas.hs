@@ -1,3 +1,4 @@
+-------------------------- iniciando a matrix -------------------------
 
 initialize :: [[String]]
 initialize  = [ [ mapValue m n  | m <- [0..8] ] | n <- [0..8] ]
@@ -11,6 +12,8 @@ mapValue x y	| (x == 0 && y == 0) = "-"
 		| (y >= 6 && y <= 8) && (y `mod` 2 /= 0 && x `mod` 2 == 0) = "X"
 		| (y >= 6 && y <= 8) && (y `mod` 2 == 0 && x `mod` 2 /= 0) = "X"
 		| otherwise = " " 
+
+--------------------- logica das jogadas ----------------------
 
 showMatrix :: [[String]] -> String
 showMatrix m = concat ( concat [ [ mapMatrix y | y <- x] ++ ["\n"]| x <- m])
@@ -68,13 +71,32 @@ makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL new
 						| (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
 						| otherwise = error "Movimento inválido"
 
+-------------------------------- jogadas -------------------------------------
+
+changeValue value
+	| value == "X" = "O" 
+	| otherwise = "X"
+ 
+movePiece value matrix = do
+	let viewMatrix = showMatrix (matrix)
+	putStrLn(viewMatrix)
+
+	putStrLn("Jogador da rodada: " ++ value)
+
+	putStrLn("digite oldL:")
+	oldL <- getLine
+	putStrLn("digite oldC:")
+	oldC <- getLine
+	putStrLn("digite newL:")
+	newL <- getLine
+	putStrLn("digite newC:")
+	newC <- getLine
+
+	movePiece (changeValue value) (makePlay (read oldL) (read oldC) (read newL) (read newC) value matrix)
+
+
 main :: IO()
 main = do
 	let matrix = initialize
-	let viewMatrix = showMatrix (matrix)
-	putStrLn(viewMatrix)
-	let moveOnMatrix1 = makePlay 3 2 4 3 "O" matrix
-	let moveOnMatrix2 = makePlay 6 5 5 4 "X" moveOnMatrix1
-	let moveOnMatrix3 = makePlay 5 4 3 2 "X" moveOnMatrix2
-	let viewMoveOnMatrix = showMatrix (moveOnMatrix3)
-	putStrLn(viewMoveOnMatrix)
+	movePiece "X" matrix
+	
