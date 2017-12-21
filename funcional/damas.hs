@@ -7,8 +7,8 @@ mapValue :: Int -> Int -> String
 mapValue x y	| (x == 0 && y == 0) = "-"
 		| (y == 0) = show(x)
 		| (x == 0) = " " ++ show(y)
-		| (x >= 1 && x <= 3) && (x `mod` 2 /= 0 && y `mod` 2 == 0) = " "
-		| (x >= 1 && x <= 3) && (x `mod` 2 == 0 && y `mod` 2 /= 0) = " "
+		| (x >= 1 && x <= 3) && (x `mod` 2 /= 0 && y `mod` 2 == 0) = "O"
+		| (x >= 1 && x <= 3) && (x `mod` 2 == 0 && y `mod` 2 /= 0) = "O"
 		| (x >= 6 && x <= 8) && (x `mod` 2 /= 0 && y `mod` 2 == 0) = "X"
 		| (x >= 6 && x <= 8) && (x `mod` 2 == 0 && y `mod` 2 /= 0) = "X"
 		| otherwise = " " 
