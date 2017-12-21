@@ -7,8 +7,8 @@ mapValue :: Int -> Int -> String
 mapValue x y	| (x == 0 && y == 0) = "-"
 		| (y == 0) = show(x)
 		| (x == 0) = " " ++ show(y)
-		| (x >= 1 && x <= 3) && (x `mod` 2 /= 0 && y `mod` 2 == 0) = "O"
-		| (x >= 1 && x <= 3) && (x `mod` 2 == 0 && y `mod` 2 /= 0) = "O"
+		| (x >= 1 && x <= 3) && (x `mod` 2 /= 0 && y `mod` 2 == 0) = " "
+		| (x >= 1 && x <= 3) && (x `mod` 2 == 0 && y `mod` 2 /= 0) = " "
 		| (x >= 6 && x <= 8) && (x `mod` 2 /= 0 && y `mod` 2 == 0) = "X"
 		| (x >= 6 && x <= 8) && (x `mod` 2 == 0 && y `mod` 2 /= 0) = "X"
 		| otherwise = " " 
@@ -150,7 +150,20 @@ game _ value matrix = do
 	
 	verifyPlayer value matrix changedMatrix
 
+choose opcao
+	| (opcao == 1) = game (verifyWinner initialize) "X" initialize
+	| (opcao == 2) = putStrLn("\n_____________________________O QUE EH O JOGO?_______________________________" 
+					++ "\n\n\t      O jogo de damas eh constituido por um tabuleiro quadratico,\n\tdividido em 64 quadrados com 24 pecas, sendo 12 de cor branca e\n\t12 de cor preta. Existem 8 linhas que estao na posicao vertical,\n\te 8 colunas na posicao horizantal e dois jogadores 'X' e 'O'.\n"
+				 	++ "\n______________________________  O OBJETIVO  ________________________________"
+				 	++ "\n\n\t      Comer todas as pecas do adversario. Quem comer todas as pecas\n\tdo adversario eh o vencedor!\n\n"
+				 	++ "\n______________________________REGRAS O JOGO_________________________________"
+					++ "\n\n\t1- Nao eh permitido comer para tras.\n\t2- Pode comer apenas uma peca.\n\t3- Pecas normais so andam uma casa por vez.\n\t4- O Jogo dura 10 Minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n"
+					++ "____________________________________________________________________________\n\n")
+	| otherwise = main
+
 main :: IO()
 main = do
-	let matrix = initialize	
-	game (verifyWinner matrix) "X" matrix
+	putStrLn("Escolha uma opcao (digite o numero): 1. Jogar | 2. Ajuda")
+	opcao <- getLine
+	choose (read opcao)
+	main
