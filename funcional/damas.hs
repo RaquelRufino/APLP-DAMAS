@@ -25,47 +25,57 @@ mapMatrix value	| (value == "O") = " O"
 		| (value /= " ") = value
 		| otherwise = " ~"
 
+-- Muda a posição das minhas pecas passando linha  e coluna antigas por linha e coluna novas
 changePosition :: Int -> Int -> String -> [[String]] -> [[String]]
 changePosition x y value matrix = [ [ verifyPosition x y m n value ( ( matrix !! n ) !! m) | m <- [0..8] ] | n <- [0..8] ]
 
+-- Verifica se uma posição er valida no tabuleiro
 verifyPosition :: Int -> Int -> Int -> Int -> String -> String -> String
 verifyPosition x y m n value old_value	| (x == n && y == m) = value
 					| otherwise = old_value
 
+-- Verifica se uma posicao faz parte do tabuleiro
 verifyIndex :: Int -> Int -> Int -> Int -> Bool
 verifyIndex oldL oldC newL newC	| ((oldL >= 1 && oldL <= 8) && (oldC >= 1 && oldC <= 8) && (newL >= 1 && newL <= 8) && (newC >= 1 && newC <= 8)) = True
 				| otherwise = False
 
+-- Move a peca do tipo "O" da esquerda para a direita, respeitando as regras de locomocao do jogo
 moveToLeftOrRightO :: Int -> Int -> Int -> Int -> [[String]] -> Bool
 moveToLeftOrRightO oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "O") = False
 						| (((oldL - newL == -1) && (oldC - newC == 1) && (((matrix !! newL) !! newC) == " ")) || ((oldL - newL == -1) && (oldC - newC == -1) && (((matrix !! newL) !! newC) == " "))) = True
 						| otherwise = False
 
+-- Come a peca do tipo "O" para a direita, respeitando as regras de locomocao do jogo
 eatToRightO :: Int -> Int -> Int -> Int -> [[String]] -> Bool
 eatToRightO oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "O") = False
 					| ((oldL - newL == -2) && (oldC - newC == 2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL - 1)) !! (newC + 1)) == "X")) = True
 					| otherwise = False
 
+-- Come a peca do tipo "O" para a esquerda, respeitando as regras de locomocao do jogo
 eatToLeftO :: Int -> Int -> Int -> Int -> [[String]] -> Bool
 eatToLeftO oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "O") = False
 					| ((oldL - newL == -2) && (oldC - newC == -2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL - 1)) !! (newC - 1)) == "X")) = True
 					| otherwise = False
 
+-- Move a peca do tipo "X" da esquerda para a direita, respeitando as regras de locomocao do jogo
 moveToLeftOrRightX :: Int -> Int -> Int -> Int -> [[String]] -> Bool
 moveToLeftOrRightX oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "X") = False
 						| (((oldL - newL == 1) && (oldC - newC == -1) && (((matrix !! newL) !! newC) == " ")) || ((oldL - newL == 1) && (oldC - newC == 1) && (((matrix !! newL) !! newC) == " "))) = True
 						| otherwise = False
-
+						
+-- Come a peca do tipo "X" para a direita, respeitando as regras de locomocao do jogo
 eatToRightX :: Int -> Int -> Int -> Int -> [[String]] -> Bool
 eatToRightX oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "X") = False
 					| ((oldL - newL == 2) && (oldC - newC == -2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL + 1)) !! (newC - 1)) == "O")) = True
 					| otherwise = False
 
+-- Come a peca do tipo "X" para a esquerda, respeitando as regras de locomocao do jogo
 eatToLeftX :: Int -> Int -> Int -> Int -> [[String]] -> Bool
 eatToLeftX oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "X") = False
 					| ((oldL - newL == 2) && (oldC - newC == 2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL + 1)) !! (newC + 1)) == "O")) = True
 					| otherwise = False
 
+-- Faz a jogada, movendo uma peca de um lugar para outro, respeitando as regras de locomocao das pecas
 makePlay :: Int -> Int -> Int -> Int -> String -> [[String]] -> [[String]]
 makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL newC)) = matrix
 						| ((( matrix !! oldL ) !! oldC) == " ") = matrix
@@ -78,18 +88,12 @@ makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL new
 						| (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
 						| otherwise = matrix
 
--------------------------------- Verificando Vencedor -------------------------------------
-
-
-checkWinner [] qtdX qtdO 
-	| qtdX == 0 = "O"
-	| qtdO == 0 = "X"
-	| otherwise = " "
-checkWinner (m:ms) qtdX qtdO 
-    | "X" `elem` m && "O" `elem` m = checkWinner ms (qtdX+1) (qtdO+1)
-    | "X" `elem` m = checkWinner ms (qtdX+1) qtdO
-    | "O" `elem` m = checkWinner ms qtdX (qtdO+1)
-    | otherwise = checkWinner ms qtdX qtdO
+-- Verifica se as pecas de um tipo ou de outro nao existem mais no tabuleiro						
+verifyPeaces :: String -> [[String]] -> Bool
+verifyPeaces value [] = False
+verifyPeaces value (a:as)	| (value `elem` a) = True
+				| otherwise = False || (verifyPeaces value as)
+				
 
 
 -------------------------------- Jogadas -------------------------------------
@@ -98,12 +102,17 @@ changeValue value
 	| value == "X" = "O" 
 	| otherwise = "X"
 
+verifyPlayer value matrix changedMatrix
+	| (matrix == changedMatrix) = game value matrix
+	| otherwise = game (changeValue value) changedMatrix
 
-game "X" _ _ = do 
-	putStrLn("O vencedor eh X")
-game "O" _ _ = do 
-	putStrLn("O vencedor eh O")
-game _ value matrix = do
+verifyWinner :: [[String]] -> Int
+verifyWinner matrix	| (verifyPeaces "O" matrix) = 0
+			| (verifyPeaces "X" matrix) = 0
+			| otherwise = 1
+
+game value matrix = do
+
 	let viewMatrix = showMatrix (matrix)
 	putStrLn(viewMatrix)
 
@@ -117,9 +126,18 @@ game _ value matrix = do
 	newL <- getLine
 	putStrLn("Digite a coluna que desejas para nova posicao da peca:")
 	newC <- getLine
-	
-	game (checkWinner matrix 0 0) (changeValue value) (makePlay (read oldL) (read oldC) (read newL) (read newC) value matrix)
 
+	let changedMatrix = (makePlay (read oldL) (read oldC) (read newL) (read newC) value matrix)
+	
+	let viewMatrix = showMatrix (changedMatrix)
+	putStrLn(viewMatrix)
+
+	if ((verifyWinner changedMatrix) == 0) then
+		putStrLn("Fim de jogo! Vencedor: " ++ value)
+	else
+		verifyPlayer value matrix changedMatrix
+
+	
 
 {-menu = do
     return "Escolha uma das opcoes abaixo:\n"
@@ -127,7 +145,7 @@ game _ value matrix = do
     return "Opcao: "	
 
 
-verifica_opcao x | x == 1 = game "X" matriz
+verifica_opcao x | x == 1 = movePiece "X" matriz
 				 | x == 2 = putStrLn ajuda
 				 | otherwise = "Opcao invalida."
 				 where matriz = initialize
@@ -149,9 +167,8 @@ main = do
 
 	print result
 -}
-
-
 main :: IO()
 main = do
-	let matrix = initialize
-	game (checkWinner matrix 0 0) "X" matrix
+	let matrix = initialize	
+	game "X" matrix
+
