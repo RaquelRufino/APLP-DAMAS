@@ -37,39 +37,46 @@ verifyIndex oldL oldC newL newC	| ((oldL >= 1 && oldL <= 8) && (oldC >= 1 && old
 				| otherwise = False
 
 moveToLeftOrRightO :: Int -> Int -> Int -> Int -> [[String]] -> Bool
-moveToLeftOrRightO oldL oldC newL newC matrix	| (((oldL - newL == -1) && (oldC - newC == 1) && (((matrix !! newL) !! newC) == " ")) || ((oldL - newL == -1) && (oldC - newC == -1) && (((matrix !! newL) !! newC) == " "))) = True
+moveToLeftOrRightO oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "O") = False
+						| (((oldL - newL == -1) && (oldC - newC == 1) && (((matrix !! newL) !! newC) == " ")) || ((oldL - newL == -1) && (oldC - newC == -1) && (((matrix !! newL) !! newC) == " "))) = True
 						| otherwise = False
 
 eatToRightO :: Int -> Int -> Int -> Int -> [[String]] -> Bool
-eatToRightO oldL oldC newL newC matrix	| ((oldL - newL == -2) && (oldC - newC == 2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL - 1)) !! (newC + 1)) == "X")) = True
+eatToRightO oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "O") = False
+					| ((oldL - newL == -2) && (oldC - newC == 2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL - 1)) !! (newC + 1)) == "X")) = True
 					| otherwise = False
 
 eatToLeftO :: Int -> Int -> Int -> Int -> [[String]] -> Bool
-eatToLeftO oldL oldC newL newC matrix	| ((oldL - newL == -2) && (oldC - newC == -2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL - 1)) !! (newC - 1)) == "X")) = True
+eatToLeftO oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "O") = False
+					| ((oldL - newL == -2) && (oldC - newC == -2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL - 1)) !! (newC - 1)) == "X")) = True
 					| otherwise = False
 
 moveToLeftOrRightX :: Int -> Int -> Int -> Int -> [[String]] -> Bool
-moveToLeftOrRightX oldL oldC newL newC matrix	| (((oldL - newL == 1) && (oldC - newC == -1) && (((matrix !! newL) !! newC) == " ")) || ((oldL - newL == 1) && (oldC - newC == 1) && (((matrix !! newL) !! newC) == " "))) = True
+moveToLeftOrRightX oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "X") = False
+						| (((oldL - newL == 1) && (oldC - newC == -1) && (((matrix !! newL) !! newC) == " ")) || ((oldL - newL == 1) && (oldC - newC == 1) && (((matrix !! newL) !! newC) == " "))) = True
 						| otherwise = False
 
 eatToRightX :: Int -> Int -> Int -> Int -> [[String]] -> Bool
-eatToRightX oldL oldC newL newC matrix	| ((oldL - newL == 2) && (oldC - newC == -2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL + 1)) !! (newC - 1)) == "O")) = True
+eatToRightX oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "X") = False
+					| ((oldL - newL == 2) && (oldC - newC == -2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL + 1)) !! (newC - 1)) == "O")) = True
 					| otherwise = False
 
 eatToLeftX :: Int -> Int -> Int -> Int -> [[String]] -> Bool
-eatToLeftX oldL oldC newL newC matrix	| ((oldL - newL == 2) && (oldC - newC == 2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL + 1)) !! (newC + 1)) == "O")) = True
+eatToLeftX oldL oldC newL newC matrix	| ((( matrix !! oldL ) !! oldC) /= "X") = False
+					| ((oldL - newL == 2) && (oldC - newC == 2) && (((matrix !! newL) !! newC) == " ") && (((matrix !! (newL + 1)) !! (newC + 1)) == "O")) = True
 					| otherwise = False
 
 makePlay :: Int -> Int -> Int -> Int -> String -> [[String]] -> [[String]]
-makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL newC)) = error "Movimento inválido!"
-						| ((( matrix !! oldL ) !! oldC) == " ") = error "Movimento inválido!"
+makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL newC)) = matrix
+						| ((( matrix !! oldL ) !! oldC) == " ") = matrix
+						| ((( matrix !! oldL ) !! oldC) /= value) = matrix
 						| (moveToLeftOrRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
 						| (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
 						| (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
 						| (moveToLeftOrRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
 						| (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
 						| (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
-						| otherwise = error "Movimento inválido!"
+						| otherwise = matrix
 
 -------------------------------- Jogadas -------------------------------------
 
@@ -77,7 +84,7 @@ changeValue value
 	| value == "X" = "O" 
 	| otherwise = "X"
  
-movePiece value matrix = do
+game value matrix = do
 	let viewMatrix = showMatrix (matrix)
 	putStrLn(viewMatrix)
 
@@ -92,7 +99,7 @@ movePiece value matrix = do
 	putStrLn("Digite a coluna que desejas para nova posicao da peca:")
 	newC <- getLine
 
-	movePiece (changeValue value) (makePlay (read oldL) (read oldC) (read newL) (read newC) value matrix)
+	game (changeValue value) (makePlay (read oldL) (read oldC) (read newL) (read newC) value matrix)
 
 {-menu = do
     return "Escolha uma das opcoes abaixo:\n"
@@ -125,5 +132,5 @@ main = do
 main :: IO()
 main = do
 	let matriz = initialize
-	movePiece "X" matriz
+	game "X" matriz
 
