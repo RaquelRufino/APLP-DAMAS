@@ -83,9 +83,9 @@ movePiece value matrix = do
 
 	putStrLn("Jogador da rodada: " ++ value)
 
-	putStrLn("Digite a linha da peca:")
+	putStrLn("Digite a linha na qual a peca se encontra:")
 	oldL <- getLine
-	putStrLn("Digite a coluna da peca:")
+	putStrLn("Digite a coluna na qual a peca se encontra:")
 	oldC <- getLine
 	putStrLn("Digite a linha que desejas para nova posicao da peca:")
 	newL <- getLine
