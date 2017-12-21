@@ -1,4 +1,4 @@
--------------------------- iniciando a matrix -------------------------
+-------------------------- Iniciando a matrix -------------------------
 
 initialize :: [[String]]
 initialize  = [ [ mapValue m n  | m <- [0..8] ] | n <- [0..8] ]
@@ -13,7 +13,7 @@ mapValue x y	| (x == 0 && y == 0) = "-"
 		| (y >= 6 && y <= 8) && (y `mod` 2 == 0 && x `mod` 2 /= 0) = "X"
 		| otherwise = " " 
 
---------------------- logica das jogadas ----------------------
+--------------------- Lógica das jogadas ----------------------
 
 showMatrix :: [[String]] -> String
 showMatrix m = concat ( concat [ [ mapMatrix y | y <- x] ++ ["\n"]| x <- m])
@@ -61,17 +61,17 @@ eatToLeftX oldL oldC newL newC matrix	| ((oldL - newL == 2) && (oldC - newC == 2
 					| otherwise = False
 
 makePlay :: Int -> Int -> Int -> Int -> String -> [[String]] -> [[String]]
-makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL newC)) = error "Movimento inválido"
-						| ((( matrix !! oldL ) !! oldC) == " ") = error "Movimento inválido"
+makePlay oldL oldC newL newC value matrix	| (not (verifyIndex oldL oldC newL newC)) = error "Movimento inválido!"
+						| ((( matrix !! oldL ) !! oldC) == " ") = error "Movimento inválido!"
 						| (moveToLeftOrRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
 						| (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
 						| (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
 						| (moveToLeftOrRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
 						| (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
 						| (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
-						| otherwise = error "Movimento inválido"
+						| otherwise = error "Movimento inválido!"
 
--------------------------------- jogadas -------------------------------------
+-------------------------------- Jogadas -------------------------------------
 
 changeValue value
 	| value == "X" = "O" 
@@ -83,20 +83,47 @@ movePiece value matrix = do
 
 	putStrLn("Jogador da rodada: " ++ value)
 
-	putStrLn("digite oldL:")
+	putStrLn("Digite a linha da peca:")
 	oldL <- getLine
-	putStrLn("digite oldC:")
+	putStrLn("Digite a coluna da peca:")
 	oldC <- getLine
-	putStrLn("digite newL:")
+	putStrLn("Digite a linha que desejas para nova posicao da peca:")
 	newL <- getLine
-	putStrLn("digite newC:")
+	putStrLn("Digite a coluna que desejas para nova posicao da peca:")
 	newC <- getLine
 
 	movePiece (changeValue value) (makePlay (read oldL) (read oldC) (read newL) (read newC) value matrix)
 
+{-menu = do
+    return "Escolha uma das opcoes abaixo:\n"
+    return "\t 1- Jogar.\n\t 2- Ajuda.\n\n"
+    return "Opcao: "	
+
+
+verifica_opcao x | x == 1 = movePiece "X" matriz
+				 | x == 2 = putStrLn ajuda
+				 | otherwise = "Opcao invalida."
+				 where matriz = initialize
+				       ajuda = "\n_____________________________O QUE EH O JOGO?_______________________________" 
+  				 		++ "\n\n\t     O jogo de Damas eh constituido por um tabuleiro quadratico,\n\tdividido em 64 quadrados com 24 pecas, sendo 12 de cor branca\n\te 12 de cor preta. Exitem  8 linhas que estao na posicao vertical,\n\te com 8 colunas na posicao horizantal.\n"
+				 		++ "\n_____________________________  O OBJETIVO  _______________________________"
+				 		++ "\n\n\t      Comer o maior numero de pecas possiveis do adversario. Quem \n\tdurante os 3 minutos tiver mais pecas, eh o vencedor!\n\n"
+				 		++ "\n______________________________REGRAS O JOGO_________________________________"
+						++ "\n\n\t1- Nao eh permitido comer para tras.\n\t2- Pode comer uma peca, nao duas de uma vez.\n\t3- Soh anda uma casa por vez.\n\t4- O Jogo dura 3 Minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n"
+						++ "____________________________________________________________________________\n\n"
 
 main :: IO()
 main = do
-	let matrix = initialize
-	movePiece "X" matrix
-	
+
+	x <- menu
+	putStrLn x
+	opcao <- getLine
+	let result = verifica_opcao opcao
+
+	print result
+-}
+main :: IO()
+main = do
+	let matriz = initialize
+	movePiece "X" matriz
+
