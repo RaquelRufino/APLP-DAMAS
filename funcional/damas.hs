@@ -171,8 +171,6 @@ game _ value matrix = do
 	putStrLn("Digite a coluna que desejas para nova posicao da peca:")
 	newC <- getLine
 	
-	putStrLn(value ++ " " ++ (changeLady value)) 
-	
 	let changedMatrix = (makePlay (read oldL) (read oldC) (read newL) (read newC) value (changeLady value) matrix)
 	
 	verifyPlay matrix changedMatrix
@@ -186,7 +184,7 @@ choose opcao
 				 	++ "\n______________________________  O OBJETIVO  ________________________________"
 				 	++ "\n\n\t      Comer todas as pecas do adversario. Quem comer todas as pecas\n\tdo adversario eh o vencedor!\n\n"
 				 	++ "\n______________________________REGRAS O JOGO_________________________________"
-					++ "\n\n\t1- Nao eh permitido comer para tras.\n\t2- Pode comer apenas uma peca.\n\t3- Pecas normais so andam uma casa por vez.\n\t4- O Jogo dura 10 ou mais minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n"
+					++ "\n\n\t1- Nao eh permitido peca normal comer ou andar para tras.\n\t2- Pode comer apenas uma peca.\n\t3- Pecas normais so andam uma casa por vez.\n\t4- O Jogo dura 10 ou mais minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n\t6- A dama pode comer ou andar para tras porém ainda apenas uma casa\n\tpor vez.\n"
 					++ "____________________________________________________________________________\n\n")
 	| otherwise = main
 
