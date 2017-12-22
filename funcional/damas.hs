@@ -4,7 +4,7 @@ initialize :: [[String]]
 initialize  = [ [ mapValue m n  | m <- [0..8] ] | n <- [0..8] ]
 
 mapValue :: Int -> Int -> String
-mapValue x y	| (x == 0 && y == 0) = "-"
+mapValue x y	| (y == 0 && x == 0) = "-"
 		| (x == 0) = show(y)
 		| (y == 0) = " " ++ show(x)
 		| (y >= 1 && y <= 3) && (y `mod` 2 /= 0 && x `mod` 2 == 0) = "O"
@@ -93,24 +93,24 @@ makePlay :: Int -> Int -> Int -> Int -> String -> String -> [[String]] -> [[Stri
 makePlay oldL oldC newL newC value ladyValue matrix	| (not (verifyIndex oldL oldC newL newC)) = matrix
 						| ((( matrix !! oldL ) !! oldC) == " ") = matrix
 						| (verifyLady oldL oldC ladyValue matrix) && (moveToLeftOrRightO oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " matrix)
-						| (verifyLady oldL oldC ladyValue matrix) && (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
-						| (verifyLady oldL oldC ladyValue matrix) && (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
+						| (verifyLady oldL oldC ladyValue matrix) && (((matrix !! (newL - 1)) !! (newC + 1)) /= value) && (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
+						| (verifyLady oldL oldC ladyValue matrix) && (((matrix !! (newL - 1)) !! (newC - 1)) /= value) && (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
 						| (verifyLady oldL oldC ladyValue matrix) && (moveToLeftOrRightX oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " matrix)
-						| (verifyLady oldL oldC ladyValue matrix) && (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
-						| (verifyLady oldL oldC ladyValue matrix) && (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
+						| (verifyLady oldL oldC ladyValue matrix) && (((matrix !! (newL + 1)) !! (newC - 1)) /= value) && (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
+						| (verifyLady oldL oldC ladyValue matrix) && (((matrix !! (newL + 1)) !! (newC + 1)) /= value) && (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC ladyValue (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
 						| ((( matrix !! oldL ) !! oldC) /= value) = matrix
 						| (value == "O") && (newL == 8) && (moveToLeftOrRightO oldL oldC newL newC matrix) = changePosition newL newC "M" (changePosition oldL oldC " " matrix)
-						| (value == "O") && (newL == 8) && (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC "M" (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
-						| (value == "O") && (newL == 8) && (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC "M" (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
+						| (value == "O") && (newL == 8) && (((matrix !! (newL - 1)) !! (newC + 1)) /= ladyValue) && (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC "M" (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
+						| (value == "O") && (newL == 8) && (((matrix !! (newL - 1)) !! (newC - 1)) /= ladyValue) && (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC "M" (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
 						| (value == "X") && (newL == 1) && (moveToLeftOrRightX oldL oldC newL newC matrix) = changePosition newL newC "Y" (changePosition oldL oldC " " matrix)
-						| (value == "X") && (newL == 1) && (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC "Y" (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
-						| (value == "X") && (newL == 1) && (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC "Y" (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
+						| (value == "X") && (newL == 1) && (((matrix !! (newL + 1)) !! (newC - 1)) /= ladyValue) && (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC "Y" (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
+						| (value == "X") && (newL == 1) && (((matrix !! (newL + 1)) !! (newC + 1)) /= ladyValue) && (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC "Y" (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
 						| (moveToLeftOrRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
-						| (eatToRightO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
-						| (eatToLeftO oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
+						| (eatToRightO oldL oldC newL newC matrix) && (((matrix !! (newL - 1)) !! (newC + 1)) /= ladyValue) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC + 1) " " matrix))
+						| (eatToLeftO oldL oldC newL newC matrix) && (((matrix !! (newL - 1)) !! (newC - 1)) /= ladyValue) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL - 1) (newC - 1) " " matrix))
 						| (moveToLeftOrRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " matrix)
-						| (eatToRightX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
-						| (eatToLeftX oldL oldC newL newC matrix) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
+						| (eatToRightX oldL oldC newL newC matrix) && (((matrix !! (newL + 1)) !! (newC - 1)) /= ladyValue) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC - 1) " " matrix))
+						| (eatToLeftX oldL oldC newL newC matrix) && (((matrix !! (newL + 1)) !! (newC + 1)) /= ladyValue) = changePosition newL newC value (changePosition oldL oldC " " (changePosition (newL + 1) (newC + 1) " " matrix))
 						| otherwise = matrix
 
 -- Verifica se as pecas de um tipo ou de outro nao existem mais no tabuleiro						
@@ -170,6 +170,8 @@ game _ value matrix = do
 	newL <- getLine
 	putStrLn("Digite a coluna que desejas para nova posicao da peca:")
 	newC <- getLine
+	
+	putStrLn(value ++ " " ++ (changeLady value)) 
 	
 	let changedMatrix = (makePlay (read oldL) (read oldC) (read newL) (read newC) value (changeLady value) matrix)
 	
