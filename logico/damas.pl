@@ -57,16 +57,16 @@ desenha_linha([A1, A2, A3, A4, A5, A6, A7, A8, A9]) :-
 % Retorna o valor de uma casa.  
 % nth0(Indice, Lista, Elemento) - itera na lista, contador de 0 a Index, e retorna elemento na Lista[Indice].
 %
-retorna_valor_na_casa(Linha, Coluna, Elemento) :-    
-   novo_tabuleiro(Matriz),
-   nth0(Linha, Matriz, LinhaLista),     % aqui retorna a linha da matriz
+retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro) :-    
+   novo_tabuleiro(Tabuleiro),
+   nth0(Linha, Tabuleiro, LinhaLista),     % aqui retorna a linha da matriz
    nth0(Coluna, LinhaLista, Elemento). % acessa o elemento da linha retornada anteriormente  
 
-% Verifica se a posicao (par linha-coluna) eh valida nos limites do tabuleiro
-%   Resultado - verificao
+% Verifica se a posicao (par linha-coluna) eh valida nos limites do tabuleiro.
+%   Resultado - verificao.
 %
-verifica_posicao(Linha, Coluna, Resultado) :- (Linha >= 1, Linha <= 8),
-    (Coluna >= 1, Coluna <= 8)), Resultado = "True";   
+verifica_indices_tabuleiro(Linha, Coluna, Resultado) :- Linha >= 1, Linha =< 8,
+    Coluna >= 1, Coluna =< 8, Resultado = "True";   
     Resultado =  "False".
 
 % Efetuada a jogada, muda o valor de uma casa.
@@ -74,20 +74,57 @@ verifica_posicao(Linha, Coluna, Resultado) :- (Linha >= 1, Linha <= 8),
 %   Valor           - novo valor.  
 %   NovoTabuleiro   - novo tabuleiro com os novos valores definidos.
 %
-muda_valor_casa(Tabuleiro, Linha, Coluna, NovoValor, NovoTabuleiro) :- 
-    verifica_posicao(Linha, Coluna, Resultado), Resultado = "True",
-    retorna_valor_na_casa(Linha, Coluna, Elemento), Elemento = NovoValor.
+muda_valor_casa(Linha, Coluna, NovoValor, Tabuleiro) :- 
+    verifica_indices_tabuleiro(Linha, Coluna, Resultado), Resultado = "True",
+    retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro),
+    Elemento = NovoValor.
 
-% Quase acabando...
+/*--------------------- FIM DAS OPERACOES LOGICAS DO JOGO --------------------------------------*/
+/* ------------------- INICIO DAS OPERACOES LOGICAS DAS JOGADAS ------------------------------- */
 
-/*----------------------------------------------------------------------------*/
+% Verifica se a peca na posicao eh uma peca valida, ou seja, do tipo "X", "O", "M", "Z".
+%   Elemento - peca que estah na posicao passada.
+%
+verifica_pecas_na_posicao(Linha, Coluna, Resultado) :-
+    retorna_valor_na_casa(Linha, Coluna, Elemento),     
+    (Elemento =:= "X"; Elemento =:= "O"; Elemento =:= "M"; Elemento =:= "Z"), 
+    Resultado = "True";
+    Resultado = "False".
 
-% fim da implementacao do tabuleiro.  
+/* ---------------- INICIO DA LOGICA DAS MOVIMENTACOES E CAPTURAS -------------------- */
+
+% Verifica se eh possivel mover a peca "O" para a direita ou esquerda.
+%
+mover_O_para_esquerda_ou_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
+	verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+	verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
+    
+    NovaLinha - LinhaAtual =:= 1,
+    (NovaColuna - ColunaAtual =:= 1; /* mover para a direita */
+    NovaColuna - ColunaAtual =:= -1), /* mover para a esquerda */
+    Permissao = "True".
+
+% Verifica se eh possivel mover a peca "X" para a direita ou esquerda.
+%
+mover_X_para_esquerda_ou_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
+	verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+	verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
+    
+    NovaLinha - LinhaAtual =:= -1,
+    (NovaColuna - ColunaAtual =:= 1; /* mover para a direita */
+    NovaColuna - ColunaAtual =:= -1), /* mover para a esquerda */
+    Permissao = "True".
+
+
+
+/* ------------------- FIM DA LOGICA DAS MOVIMENTACOES E CAPTURAS --------------------- */
+
+% Chegando ao fim da implementacao do tabuleiro...  
   
-% implementacao da logica do jogo  
-  
-% definicoes:  
-%   define o loop principal do jogo  
-        % desenha  
-        % processa  
-        % veficia se o jogo acabou 
+% Definicoes:  
+%   Definir o loop principal do jogo  
+        % Desenhar o tabuleiro
+        % Processar a jogada (e verificar se eh a IA ou Humano)  
+        % Verifica se o jogo acabou 
