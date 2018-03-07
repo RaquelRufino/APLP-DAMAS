@@ -82,12 +82,12 @@ muda_valor_casa(Linha, Coluna, NovoValor, Tabuleiro) :-
 /*--------------------- FIM DAS OPERACOES LOGICAS DO JOGO --------------------------------------*/
 /* ------------------- INICIO DAS OPERACOES LOGICAS DAS JOGADAS ------------------------------- */
 
-% Verifica se a peca na posicao eh uma peca valida, ou seja, do tipo "X", "O", "M", "Z".
+% Verifica se a peca na posicao eh uma peca valida, ou seja, do tipo "X", "O", "Z" (dama do X), "M" (dama do O).
 %   Elemento - peca que estah na posicao passada.
 %
-verifica_pecas_na_posicao(Linha, Coluna, Resultado) :-
-    retorna_valor_na_casa(Linha, Coluna, Elemento),     
-    (Elemento =:= "X"; Elemento =:= "O"; Elemento =:= "M"; Elemento =:= "Z"), 
+verifica_pecas_na_posicao(Linha, Coluna, Tabuleiro, Resultado) :-
+    retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro),     
+    (Elemento =:= "X"; Elemento =:= "O"; Elemento =:= "Z"; Elemento =:= "M"), 
     Resultado = "True";
     Resultado = "False".
 
@@ -96,8 +96,8 @@ verifica_pecas_na_posicao(Linha, Coluna, Resultado) :-
 % Verifica se eh possivel mover a peca "O" para a direita ou esquerda.
 %
 mover_O_para_esquerda_ou_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
-	verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
-	verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+    verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
     retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
     
     NovaLinha - LinhaAtual =:= 1,
@@ -108,8 +108,8 @@ mover_O_para_esquerda_ou_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna,
 % Verifica se eh possivel mover a peca "X" para a direita ou esquerda.
 %
 mover_X_para_esquerda_ou_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
-	verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
-	verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+    verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
     retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
     
     NovaLinha - LinhaAtual =:= -1,
@@ -117,11 +117,90 @@ mover_X_para_esquerda_ou_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna,
     NovaColuna - ColunaAtual =:= -1), /* mover para a esquerda */
     Permissao = "True".
 
+/* ---------------- CAPTURAS -------------------- */
 
+peca_O_come_para_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
+    verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+    verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
+
+    NovaLinha - LinhaAtual =:= 2, NovaColuna - ColunaAtual =:= 2,
+    retorna_valor_na_casa(LinhaAtual, ColunaAtual, PecaAtual, Tabuleiro),
+
+    LinhaPecaCapturada is NovaLinha - 1, ColunaPecaCapturada is NovaColuna - 1,
+
+    retorna_valor_na_casa(LinhaPecaCapturada, ColunaPecaCapturada, Peca, Tabuleiro),
+    Peca =\= PecaAtual,
+    Permissao = "True".
+
+peca_O_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
+    verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+    verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
+
+    NovaLinha - LinhaAtual =:= 2, NovaColuna - ColunaAtual =:= -2,
+    retorna_valor_na_casa(LinhaAtual, ColunaAtual, PecaAtual, Tabuleiro),
+
+    LinhaPecaCapturada is NovaLinha - 1, ColunaPecaCapturada is NovaColuna + 1,
+
+    retorna_valor_na_casa(LinhaPecaCapturada, ColunaPecaCapturada, Peca, Tabuleiro),
+    Peca =\= PecaAtual,
+    Permissao = "True".
+
+peca_X_come_para_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
+    verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+    verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
+
+    NovaLinha - LinhaAtual =:= -2, NovaColuna - ColunaAtual =:= 2,
+    retorna_valor_na_casa(LinhaAtual, ColunaAtual, PecaAtual, Tabuleiro),
+
+    LinhaPecaCapturada is NovaLinha - 1, ColunaPecaCapturada is NovaColuna - 1,
+
+    retorna_valor_na_casa(LinhaPecaCapturada, ColunaPecaCapturada, Peca, Tabuleiro),
+    Peca =\= PecaAtual,
+    Permissao = "True".
+
+peca_X_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
+    verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
+    verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
+    retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
+
+    NovaLinha - LinhaAtual =:= -2, NovaColuna - ColunaAtual =:= -2,
+    retorna_valor_na_casa(LinhaAtual, ColunaAtual, PecaAtual, Tabuleiro),
+
+    LinhaPecaCapturada is NovaLinha - 1, ColunaPecaCapturada is NovaColuna + 1,
+
+    retorna_valor_na_casa(LinhaPecaCapturada, ColunaPecaCapturada, Peca, Tabuleiro),
+    Peca =\= PecaAtual,
+    Permissao = "True".
+
+% Verifica se a peca da posicao passada eh uma dama.
+%
+eh_dama(LinhaAtual, ColunaAtual, Tabuleiro, Permissao) :-
+    verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao),
+    Verificacao = "True",
+    retorna_valor_na_casa(LinhaAtual, ColunaAtual, Elemento, Tabuleiro),
+    (Elemento =:= "M"; Elemento =:= "Z"), Permissao = "True".
 
 /* ------------------- FIM DA LOGICA DAS MOVIMENTACOES E CAPTURAS --------------------- */
 
-% Chegando ao fim da implementacao do tabuleiro...  
+% Fatos para alternar os jogadores.
+%
+alterna_jogador("X", "O").
+alterna_jogador("O", "X").
+
+% Fatos para transformar a peca em sua respectiva rainha...
+%
+transforma_peca_em_rainha("O", "M").
+transforma_peca_em_rainha("X", "Z").
+
+% Fatos para trocar o valor do jogo, ou seja, se eh um jogo entre humanos ou contra a maquina.
+%
+troca_valor("Humano", "Maquina").
+troca_valor("Maquina", "Humano").
+
+% Chegando ao fim da implementacao do jogo. O que falta...  
   
 % Definicoes:  
 %   Definir o loop principal do jogo  
