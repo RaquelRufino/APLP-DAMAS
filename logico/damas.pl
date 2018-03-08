@@ -85,9 +85,15 @@ muda_valor_casa(Linha, Coluna, NovoValor, Tabuleiro) :-
 % Verifica se a peca na posicao eh uma peca valida, ou seja, do tipo "X", "O", "Z" (dama do X), "M" (dama do O).
 %   Elemento - peca que estah na posicao passada.
 %
-verifica_pecas_na_posicao(Linha, Coluna, Tabuleiro, Resultado) :-
+verifica_pecas_na_posicao("X", Linha, Coluna, Tabuleiro, Resultado) :-
     retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro),     
-    (Elemento =:= "X"; Elemento =:= "O"; Elemento =:= "Z"; Elemento =:= "M"), 
+    (Elemento =:= "X"; Elemento =:= "Z";), 
+    Resultado = "True";
+    Resultado = "False".
+
+verifica_pecas_na_posicao("O", Linha, Coluna, Tabuleiro, Resultado) :-
+    retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro),     
+    (Elemento =:= "O"; Elemento =:= "M"), 
     Resultado = "True";
     Resultado = "False".
 
@@ -203,9 +209,9 @@ troca_valor("Maquina", "Humano").
 % Verifica se a jogada foi realizada com sucesso.
 %
 verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem) :-
-    Tabuleiro = NovoTabuleiro, Mensagem = "Jogada inválida!\n"
+    Tabuleiro = NovoTabuleiro, Mensagem = "Jogada inválida!\n".
 verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem) :-
-    Tabuleiro \= NovoTabuleiro, Mensagem = "Jogada realizada!\n"
+    Tabuleiro \= NovoTabuleiro, Mensagem = "Jogada realizada!\n".
 
 % Chegando ao fim da implementacao do jogo. O que falta...  
   
@@ -214,7 +220,7 @@ verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem) :-
         % Desenhar o tabuleiro
         % Processar a jogada (e verificar se eh a IA ou Humano)  
         % Verifica se o jogo acabou 
-
+(verifyLady oldL oldC ladyValue matrix)
 % Verifica se as pecas de um tipo nao existem mais no tabuleiro.
 %
 verifica_tabuleiro(Peca, DamaPeca, [], "False") :- !.
@@ -236,9 +242,46 @@ retorna_vencedor(Tabuleiro, Elemento) :-
 %  Jogador X sempre comeca
 %
 menu_opcao(Opcao) :-
-    Opcao = 1, inicia_jogo(Oponente, retorna_vencedor(novo_tabuleiro, Elemento), "X", novo_tabuleiro);
-    Opcao = 2, print("COLOCA AS REGRAS AQUI!");
+    Opcao = 1, inicia_jogo(retorna_vencedor(novo_tabuleiro, Elemento), "X", novo_tabuleiro),
+    Opcao = 2, print("COLOCA AS REGRAS AQUI!"),
     Opcao = _, main.
+    
+pega_posicao(Linha, Coluna):-
+	print("Digite a linha na qual a peca se encontra:"),
+	read(Linha),
+	print("Digite a coluna na qual a peca se encontra:"),
+	read(Coluna).
+
+pega_nova_posicao(NovaLinha, NovaColuna):-
+	print("Digite a linha que desejas para nova posicao da peca:"),
+	read(NovaLinha),
+	print("Digite a coluna que desejas para nova posicao da peca:"),
+	read(NovaColuna).
+
+inicia_jogo(Tabuleiro, Jogador):-
+	desenha_tabuleiro([L1, L2, L3, L4, L5, L6, L7, L8, L9]),
+	append("Jogador da rodada: ", Jogador, X), 
+	print(X),
+	pega_posicao(Linha, Coluna),
+	pega_nova_posicao(NovaLinha, NovaColuna),
+	
+
+
+makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	verifica_indices_tabuleiro(Linha, Coluna, Resultado), Resultado = False, Tabuleiro = NovoTabuleiro.
+
+makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	verifica_indices_tabuleiro(NovaLinha, NovaColuna, Resultado), Resultado = False, Tabuleiro = NovoTabuleiro.	
+
+makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	verifica_pecas_na_posicao(Jogador, Linha, Coluna, Tabuleiro, Resultado), Resultado = False, NovoTabuleira = Tabuleiro.
+
+makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	mover_O_para_esquerda_ou_direita(Linha, Coluna, novaLinha, novaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(novaLinha, novaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro
+	
+
+
+	
 
 /*
 print(string_concat("\n_____________________________O QUE EH O JOGO?_______________________________",
@@ -251,7 +294,8 @@ print(string_concat("\n_____________________________O QUE EH O JOGO?____________
 
 */
 
-initialization :- main.
+:- initialization main.
+
 main:-
     print("Escolha uma opcao (digite o numero): 1. Jogar | 2. Ajuda"),nl,
     read(Opcao),nl,
