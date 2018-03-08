@@ -277,7 +277,7 @@ makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro
 	verifica_pecas_na_posicao(Jogador, Linha, Coluna, Tabuleiro, Resultado), Resultado = False, NovoTabuleira = Tabuleiro.
 
 makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
-	mover_O_para_esquerda_ou_direita(Linha, Coluna, novaLinha, novaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(novaLinha, novaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro
+	mover_O_para_esquerda_ou_direita(Linha, Coluna, novaLinha, novaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(novaLinha, novaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
 	
 
 
