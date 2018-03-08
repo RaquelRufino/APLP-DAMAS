@@ -200,6 +200,13 @@ transforma_peca_em_rainha("X", "Z").
 troca_valor("Humano", "Maquina").
 troca_valor("Maquina", "Humano").
 
+% Verifica se a jogada foi realizada com sucesso.
+%
+verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem) :-
+    Tabuleiro = NovoTabuleiro, Mensagem = "Jogada inválida!\n"
+verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem) :-
+    Tabuleiro \= NovoTabuleiro, Mensagem = "Jogada realizada!\n"
+
 % Chegando ao fim da implementacao do jogo. O que falta...  
   
 % Definicoes:  
@@ -207,3 +214,47 @@ troca_valor("Maquina", "Humano").
         % Desenhar o tabuleiro
         % Processar a jogada (e verificar se eh a IA ou Humano)  
         % Verifica se o jogo acabou 
+
+% Verifica se as pecas de um tipo nao existem mais no tabuleiro.
+%
+verifica_tabuleiro(Peca, DamaPeca, [], "False") :- !.
+verifica_tabuleiro(Peca, DamaPeca, [Cabeca|Cauda], Resultado) :-
+    (member(Peca, Cabeca); member(DamaPeca, Cabeca)), Resultado = "True";
+    verifica_tabuleiro(Peca, DamaPeca, Cauda, Resultado).
+
+% Verifica e retorna o vencedor do jogo.
+%
+retorna_vencedor(Tabuleiro, Elemento) :-
+    verifica_tabuleiro("O", "M",  Tabuleiro, Resultado), Resultado = "True",
+    Elemento = "O".
+retorna_vencedor(Tabuleiro, Elemento) :-
+    verifica_tabuleiro("X", "Z",  Tabuleiro, Resultado), Resultado = "True",
+    Elemento = "X".
+
+% Menu do jogo, recebe a opcao.
+%  Oponente - Se eh Humano ou Maquina
+%  Jogador X sempre comeca
+%
+menu_opcao(Opcao) :-
+    Opcao = 1, inicia_jogo(Oponente, retorna_vencedor(novo_tabuleiro, Elemento), "X", novo_tabuleiro);
+    Opcao = 2, print("COLOCA AS REGRAS AQUI!");
+    Opcao = _, main.
+
+/*
+print(string_concat("\n_____________________________O QUE EH O JOGO?_______________________________",
+                    "\n\n\t      O jogo de damas eh constituido por um tabuleiro quadratico,\n\tdividido em 64 quadrados com 24 pecas, sendo 12 de cor branca e\n\t12 de cor preta. Existem 8 linhas que estao na posicao vertical,\n\te 8 colunas na posicao horizantal e dois jogadores 'O' e 'X',\n\tonde a dama de O é 'M' e a de X é 'Y'.\n",
+                    "\n______________________________  O OBJETIVO  ________________________________",
+                    "\n\n\t      Comer todas as pecas do adversario. Quem comer todas as pecas\n\tdo adversario eh o vencedor!\n\n",
+                    "\n______________________________REGRAS O JOGO_________________________________",
+                    "\n\n\t1- Nao eh permitido peca normal comer ou andar para tras.\n\t2- Pode comer apenas uma peca.\n\t3- Pecas normais so andam uma casa por vez.\n\t4- O Jogo dura 10 ou mais minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n\t6- A dama pode comer ou andar para tras porém ainda apenas uma casa\n\tpor vez.\n",
+                    "____________________________________________________________________________\n\n"));
+
+*/
+
+initialization :- main.
+main:-
+    print("Escolha uma opcao (digite o numero): 1. Jogar | 2. Ajuda"),nl,
+    read(Opcao),nl,
+    menu_opcao(Opcao),
+    main,
+    halt(0).
