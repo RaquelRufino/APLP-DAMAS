@@ -267,17 +267,33 @@ inicia_jogo(Tabuleiro, Jogador):-
 	
 
 
-makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
 	verifica_indices_tabuleiro(Linha, Coluna, Resultado), Resultado = False, Tabuleiro = NovoTabuleiro.
 
-makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
 	verifica_indices_tabuleiro(NovaLinha, NovaColuna, Resultado), Resultado = False, Tabuleiro = NovoTabuleiro.	
 
-makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
 	verifica_pecas_na_posicao(Jogador, Linha, Coluna, Tabuleiro, Resultado), Resultado = False, NovoTabuleira = Tabuleiro.
 
-makePlay(Linha, Coluna, novaLinha, novaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
-	mover_O_para_esquerda_ou_direita(Linha, Coluna, novaLinha, novaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(novaLinha, novaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	mover_O_para_esquerda_ou_direita(Linha, Coluna, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
+	
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	mover_X_para_esquerda_ou_direita(Linha, Coluna, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro.
+	
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	peca_O_come_para_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(Linha+1, Coluna+1, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
+
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	peca_O_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(Linha+1, Coluna-1, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
+	
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	peca_X_come_para_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(Linha-1, Coluna+1, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro.
+	
+makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+	peca_X_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(Linha-1, Coluna-1, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro.
+
 	
 
 
