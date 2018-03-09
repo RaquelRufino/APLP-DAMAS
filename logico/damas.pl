@@ -142,10 +142,20 @@ verifica_pecas_na_posicao("O", Linha, Coluna, Tabuleiro, Resultado) :-
     Resultado = "True";
     Resultado = "False".
 
+
+verifica_igualdade_linha([], _, Result) :-
+    Result = "True".
+verifica_igualdade_linha([T|Ts], [N|Ns], Result) :-
+    T = N,
+    verifica_igualdade_linha(Ts, Ns, Result).
+verifica_igualdade_linha([T|Ts], [N|Ns], Result) :-
+    Result = "False".
+
 verifica_igualdade_tabuleiros([], _, Result) :-
     Result = "True".
 verifica_igualdade_tabuleiros([T|Ts], [N|Ns], Result) :-
-    T = N,
+    verifica_igualdade_linha(T, N, ResultLinha),
+    ResultLinha = "True",
     verifica_igualdade_tabuleiros(Ts, Ns, Result).
 verifica_igualdade_tabuleiros([T|Ts], [N|Ns], Result) :-
     Result = "False".
@@ -282,9 +292,6 @@ pulaJogador(_, _, _, _, _, Tabuleiro, NovoTabuleiro) :-
 
 
 
-%%%%%%%%%%%%%%%%%%%%%% puladama()
-
-
 
 pula(Linha, Coluna, NovaLinha, NovaColuna, Elemento, Tabuleiro, NovoTabuleiro) :-
     (Linha - NovaLinha =:= 1 ; Linha - NovaLinha =:= 2 ; Linha - NovaLinha =:= -1 ; Linha - NovaLinha =:= -2),
@@ -303,21 +310,15 @@ pula(_, _, _, _, Tabuleiro, NovoTabuleiro) :-
 
 
 
-
-
------------------------------------------
-
-
-
-verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador) :-
-    write("veio"),nl,
-    verifica_igualdade_tabuleiros(Tabuleiro, NovoTabuleiro, Result),
-    Result = "True",
+verificaJogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador) :-
+    Tabuleiro = NovoTabuleiro,
     Mensagem = "Jogada inválida!",
     NovoJogador = Jogador.
-verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador) :- 
+verificaJogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador) :- 
     Mensagem = "Jogada realizada!",
     alterna_jogador(Jogador, NovoJogador).
+
+
 
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Tabuleiro, Jogador, NovoTabuleiro, NovoJogador, Mensagem) :-
     verifica_indices_tabuleiro(Linha, Coluna, Resultado1),
@@ -330,7 +331,7 @@ realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Tabuleiro, Jogador, NovoTab
     retorna_valor_na_casa(NovaLinha, NovaColuna, ElementoVazio, Tabuleiro),
     espacoVazio(ElementoVazio),
     pula(Linha, Coluna, NovaLinha, NovaColuna, Elemento, Tabuleiro, NovoTabuleiro),
-    verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador).
+    verificaJogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador).
 realiza_jogada(_, _, _, _, Tabuleiro, Jogador, NovoTabuleiro, NovoJogador, Mensagem) :-
     NovoTabuleiro = Tabuleiro,
     NovoJogador = Jogador,
@@ -350,12 +351,23 @@ inicia_jogo(Tabuleiro, Jogador):-
     inicia_jogo(NovoTabuleiro, NovoJogador).
 
 menu_opcao('1') :-
-    %retorna_vencedor(novo_tabuleiro, Elemento),
     novo_tabuleiro(Tabuleiro),
     inicia_jogo(Tabuleiro,"X").
 menu_opcao('2') :-
-    print("COLOCA AS REGRAS AQUI!"), nl.
+    nl, print("_____________________________O QUE EH O JOGO?_______________________________"),
+    nl, print("O jogo de damas eh constituido por um tabuleiro quadratico, dividido em 64 quadrados com 24 pecas, sendo 12 de cor branca e 12 de cor preta."),
+    nl, print("Existem 8 linhas que estao na posicao vertical e 8 colunas na posicao horizantal. Dois jogadores 'O' e 'X', onde a dama de O é 'M' e a de X é 'Z'."),
+    nl, print("______________________________  O OBJETIVO  ________________________________"),
+    nl, print("Comer todas as pecas do adversario. Quem comer todas as pecas do adversario eh o vencedor!"),
+    nl, print("______________________________REGRAS O JOGO_________________________________"),
+    nl, print("1- Nao eh permitido peca normal comer ou andar para tras."),
+    nl, print("2- Pode comer apenas uma peca."),
+    nl, print("3- Pecas normais so andam uma casa por vez."),
+    nl, print("4- O Jogo dura 10 ou mais minutos."),
+    nl, print("5- Nao eh permitido jogar com uma peca do adversario."),
+    nl, print("6- A dama pode comer ou andar para tras, porem, apenas uma casa por vez."),nl,nl.
 menu_opcao(_) :-
+    print("Opcao invalida, tenta de novo, parca!"),nl,
     main.
     
     
@@ -410,7 +422,7 @@ print(string_concat("\n_____________________________O QUE EH O JOGO?____________
 :- initialization main.
 
 main :-
-    print("Novo Jogo!"), nl,
+    nl, print("Novo Jogo!"), nl,
     print("Escolha uma opcao (digite o numero): 1. Jogar | 2. Ajuda"),nl,
     read_line_to_codes(user_input, T1),
     string_to_atom(T1, A),
