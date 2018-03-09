@@ -1,7 +1,10 @@
 /* ------------------- REGRAS PARA DESENHAR O TABULEIRO ------------------------------ */
 
 % Cria um tabuleiro.  
-%  
+%
+
+:- use_module(library(lists)).
+
 novo_tabuleiro( [["-","1","2","3","4","5","6","7","8"],
                 ["1","~","O","~","O","~","O","~","O"],
                 ["2","O","~","O","~","O","~","O","~"],
@@ -53,6 +56,21 @@ desenha_linha([A1, A2, A3, A4, A5, A6, A7, A8, A9]) :-
 /* ------------------- FIM DE REGRAS PARA DESENHAR O TABULEIRO ------------------------------ */
 /* ------------------- INICIO DAS OPERACOES LOGICAS DO JOGO --------------------------------- */
 
+% Fatos para alternar os jogadores.
+%
+troca_jogador("X","O").
+troca_jogador("O","X").
+
+% Fatos para alternar os valores das pecas.
+troca_valor_posicao("X","O").
+troca_valor_posicao("O","X").
+troca_valor_posicao("~","X").
+troca_valor_posicao("~","O").
+
+% Fatos para transformar a peca em sua respectiva rainha...
+%
+transforma_peca_em_rainha("O", "M").
+transforma_peca_em_rainha("X", "Z").
 
 % Retorna o valor de uma casa.  
 % nth0(Indice, Lista, Elemento) - itera na lista, contador de 0 a Index, e retorna elemento na Lista[Indice].
@@ -66,8 +84,7 @@ retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro) :-
 %   Resultado - verificao.
 %
 verifica_indices_tabuleiro(Linha, Coluna, Resultado) :- Linha >= 1, Linha =< 8,
-    Coluna >= 1, Coluna =< 8, Resultado = "True";   
-    Resultado =  "False".
+    Coluna >= 1, Coluna =< 8, Resultado = "True".
 
 % Efetuada a jogada, muda o valor de uma casa.
 %   Tabuleiro       - tabuleiro.    
@@ -75,8 +92,12 @@ verifica_indices_tabuleiro(Linha, Coluna, Resultado) :- Linha >= 1, Linha =< 8,
 %   NovoTabuleiro   - novo tabuleiro com os novos valores definidos.
 %
 muda_valor_casa(Linha, Coluna, NovoValor, Tabuleiro, NovoTabuleiro) :- 
+    print("ENTROU EM MUDA_V"),nl,
     retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro),
+    print("PASSOU DE RETORNA"),nl,
+    print(Elemento),nl,
     troca_valor_posicao(Elemento, NovoValor),
+    print("TROCOU VALOR"),nl,
     
     nth0(Linha,Tabuleiro,LinhaTabuleiro),
     PosAux is Coluna+1, LinhaSubstituida is Linha+1,
@@ -96,21 +117,21 @@ substituir(X,N,[C|L],[C|R]) :- N1 is N-1, substituir(X,N1,L,R).
 %
 verifica_pecas_na_posicao("X", Linha, Coluna, Tabuleiro, Resultado) :-
     retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro),     
-    (Elemento =:= "X"; Elemento =:= "Z";), 
-    Resultado = "True";
-    Resultado = "False".
+    (Elemento =:= "X"; Elemento =:= "Z"), 
+    print(Elemento),nl,
+    Resultado = "True".
 
 verifica_pecas_na_posicao("O", Linha, Coluna, Tabuleiro, Resultado) :-
     retorna_valor_na_casa(Linha, Coluna, Elemento, Tabuleiro),     
     (Elemento =:= "O"; Elemento =:= "M"), 
-    Resultado = "True";
-    Resultado = "False".
+    Resultado = "True".
 
 /* ---------------- INICIO DA LOGICA DAS MOVIMENTACOES E CAPTURAS -------------------- */
 
 % Verifica se eh possivel mover a peca "O" para a direita ou esquerda.
 %
 mover_O_para_esquerda_ou_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao) :-
+
     verifica_indices_tabuleiro(LinhaAtual, ColunaAtual, Verificacao), Verificacao = "True",
     verifica_indices_tabuleiro(NovaLinha, NovaColuna, OutraVerificacao), OutraVerificacao = "True",
     retorna_valor_na_casa(NovaLinha, NovaColuna, Elemento, Tabuleiro), Elemento = "~",
@@ -217,55 +238,41 @@ verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem) :-
 
 % Verifica se as pecas de um tipo nao existem mais no tabuleiro.
 %
-verifica_tabuleiro(Peca, DamaPeca, [], "False") :- !.
+verifica_tabuleiro(Peca, DamaPeca, [], Resultado) :- Resultado = "False".
+
 verifica_tabuleiro(Peca, DamaPeca, [Cabeca|Cauda], Resultado) :-
     (member(Peca, Cabeca); member(DamaPeca, Cabeca)), Resultado = "True";
-    verifica_tabuleiro(Peca, DamaPeca, Cauda, Resultado).
+    verifica_tabuleiro(Peca, DamaPeca, Cauda, Resultado),  
 
-% Fatos para alternar os jogadores.
-%
-troca_jogador("X","O").
-troca_jogador("O","X").
+% Verifica e retorna o vencedor jogo.
 
-% Fatos para alternar os valores das pecas.
-troca_valor_posicao("X","O").
-troca_valor_posicao("O","X").
-troca_valor_posicao("~","X").
-troca_valor_posicao("~","O").
-
-% Fatos para transformar a peca em sua respectiva rainha...
-%
-transforma_peca_em_rainha("O", "M").
-transforma_peca_em_rainha("X", "Z").
-
-% Verifica e retorna o vencedor do jogo.
-%
 retorna_vencedor(Tabuleiro, Jogador, ResultadoJogo) :-
-    verifica_tabuleiro("O", "M",  Tabuleiro, Resultado), Resultado = "True",
+    (verifica_tabuleiro("O", "M",  Tabuleiro, Resultado), Resultado = "True"),
     Jogador = "O", ResultadoJogo = "True".
 retorna_vencedor(Tabuleiro, Jogador, ResultadoJogo) :-
-    verifica_tabuleiro("X", "Z",  Tabuleiro, Resultado), Resultado = "True",
+    (verifica_tabuleiro("X", "Z",  Tabuleiro, Resultado), Resultado = "True"),
     Jogador = "X", ResultadoJogo = "True".
 
 % Recebe a posicao na qual a peca atual estah.    
 %
 pega_posicao(Linha, Coluna) :-
-    verifica_indices_tabuleiro(Linha, Coluna, Verificacao),
-    verificacao = "True",
     print("Digite a linha na qual a peca se encontra: "),
     read(Linha),
     print("Digite a coluna na qual a peca se encontra: "),
-    read(Coluna).
+    read(Coluna),
+    verifica_indices_tabuleiro(Linha, Coluna, Verificacao),
+    Verificacao = "True".
+    
 
 % Recebe as coordenadas para a nova posicao da peca.
 %
 pega_nova_posicao(NovaLinha, NovaColuna) :-
-    verifica_indices_tabuleiro(NovaLinha, NovaColuna, Verificacao),
-    verificacao = "True",
     print("Digite a linha que desejas para nova posicao da peca: "),
     read(NovaLinha),
     print("Digite a coluna que desejas para nova posicao da peca: "),
-    read(NovaColuna).
+    read(NovaColuna),
+    verifica_indices_tabuleiro(NovaLinha, NovaColuna, Verificacao),
+    Verificacao = "True".
 
 % Inicia a partida.
 %
@@ -278,9 +285,7 @@ inicia_jogo :-
 quem_comeca(Jogador) :-
     novo_tabuleiro(Tabuleiro), /* cria um tabuleiro. */
     desenha_tabuleiro(Tabuleiro), /* desenha o tabuleiro. */
-    print("Jogador da rodada: "),
-    print(Jogador), 
-    processa_jogo(Tabuleiro, Jogador, NovoTabuleiro), !. /* evita que seja iniciado um novo jogo. */
+    processa_jogo(Tabuleiro, Jogador, NovoTabuleiro).
  
 % Responsavel pelo loop principal do jogo.  
 % Checa se eh gameover; se nao, faz a proxima jogada acontecer.  
@@ -289,68 +294,83 @@ quem_comeca(Jogador) :-
 %   AntigoTabuleiro - tabuleiro antes.  
 %   NovoTabuleiro   - tabuleiro novo.  
 %
-processa_jogo(TabuleiroAntigo, Jogador, NovoTabuleiro) :- 
-    retorna_vencedor(Tabuleiro, Vencedor, ResultadoJogo), ResultadoJogo = "True",
-    nl, print('Fim do jogo, parças!'),
-    nl, print('Vencedor: '), print(Jogador), nl,
-    NovoTabuleiro = TabuleiroAntigo,               
-    desenha_tabuleiro(TabuleiroNovo).
+processa_jogo(Tabuleiro, Jogador, NovoTabuleiro) :-
+    retorna_vencedor(Tabuleiro, Vencedor, Resultado), ResultadoJogo = "True",
+    NovoTabuleiro = Tabuleiro,
+    desenha_tabuleiro(NovoTabuleiro).
 
-processa_jogo(TabuleiroAntigo, Jogador, NovoTabuleiro) :-
-    passa_a_vez(TabuleiroAntigo, Jogador, Linha, Coluna, NovaLinha, NovaColuna),
-    realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, TabuleiroAntigo, TempTabuleiro),
+processa_jogo(Tabuleiro, Jogador, NovoTabuleiro) :-
+    print("Jogador da rodada: "),
+    print(Jogador),nl,
+
+    pega_posicao(Linha, Coluna),
+    pega_nova_posicao(NovaLinha, NovaColuna),
+    realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, TempTabuleiro),
+    print("REALIZOU FERA."),nl,
+
     desenha_tabuleiro(TempTabuleiro),
     troca_jogador(Jogador, OutroJogador),
-    processa_jogo(TempTabuleiro, OutroJogador, NovoTabuleiro). % proximo processamento.
-
-% Pega a posicao da jogada efetuada e alterna as jogadas. 
-%
-passa_a_vez(TabuleiroAntigo, _, Linha, Coluna, NovaLinha, NovaColuna) :-
-    pega_posicao(Linha, Coluna),
-    pega_nova_posicao(NovaLinha, NovaColuna).
-
+    processa_jogo(TempTabuleiro, OutroJogador, NovoTabuleiro). 
+   
 % Regras para as realizacoes das jogadas feitas pelos oponentes.
 %
-realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
-    verifica_indices_tabuleiro(Linha, Coluna, Resultado), Resultado = "False", Tabuleiro = NovoTabuleiro.
 
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
-    verifica_indices_tabuleiro(NovaLinha, NovaColuna, Resultado), Resultado = "False", Tabuleiro = NovoTabuleiro. 
-
-realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+    print("1"),nl,
     verifica_pecas_na_posicao(Jogador, Linha, Coluna, Tabuleiro, Resultado), Resultado = "False", NovoTabuleiro = Tabuleiro.
 
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+    print("ENTRAAAAAAAAAA EM MOVER O"),nl,
     mover_O_para_esquerda_ou_direita(Linha, Coluna, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = "True",
-    muda_valor_casa(Linha, Coluna, "~", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
+    print("ENTROU EM MOVER_O"),nl,
+    muda_valor_casa(Linha, Coluna, "~", Tabuleiro, TempTabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "O", TempTabuleiro, NovoTabuleiro),
+    print("SAIU EM MOVER_O"),nl. 
     
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+    print("ENTRAAAAAAA"),nl,
     mover_X_para_esquerda_ou_direita(Linha, Coluna, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = "True",
-    muda_valor_casa(Linha, Coluna, "~", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro.
+    print("ENTROU EM MOVER_X"),nl,
+    muda_valor_casa(Linha, Coluna, "~", Tabuleiro, TempTabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", TempTabuleiro, NovoTabuleiro),
+    print("SAIU EM MOVER_X"),nl. 
     
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+    print("PRIMEIRA DE COMER"),nl,
     peca_O_come_para_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = "True",
+
     TempLinha is Linha + 1, TempColuna is Coluna + 1,
-    muda_valor_casa(Linha, Coluna, "~", Tabuleiro), muda_valor_casa(TempLinha, TempColuna, "~", Tabuleiro),
-    muda_valor_casa(NovaLinha, NovaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
+
+    muda_valor_casa(Linha, Coluna, "~", Tabuleiro, TempTabuleiro_1), muda_valor_casa(TempLinha, TempColuna, "~", TempTabuleiro_1, TempTabuleiro_2),
+    muda_valor_casa(NovaLinha, NovaColuna, "O", TempTabuleiro_2, NovoTabuleiro).
 
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+    print("SEGUNDA DE COMER"),nl,
+
     peca_O_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = "True",
+
     TempLinha is Linha + 1, TempColuna is Coluna - 1,
-    muda_valor_casa(Linha, Coluna, "~", Tabuleiro), muda_valor_casa(TempLinha, TempColuna, "~", Tabuleiro),
-    muda_valor_casa(NovaLinha, NovaColuna, "O", Tabuleiro), NovoTabuleiro = Tabuleiro.
+
+    muda_valor_casa(Linha, Coluna, "~", Tabuleiro, TempTabuleiro_1), muda_valor_casa(TempLinha, TempColuna, "~", TempTabuleiro_1, TempTabuleiro_2),
+    muda_valor_casa(NovaLinha, NovaColuna, "O", TempTabuleiro_2, NovoTabuleiro).
     
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+    print("TERCA DE COMER"),nl,
+
     peca_X_come_para_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = "True",
+
     TempLinha is Linha - 1, TempColuna is Coluna + 1,
-    muda_valor_casa(Linha, Coluna, "~", Tabuleiro), muda_valor_casa(TempLinha, TempColuna, "~", Tabuleiro),
-    muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro.
+
+    muda_valor_casa(Linha, Coluna, "~", Tabuleiro, TempTabuleiro_1), muda_valor_casa(TempLinha, TempColuna, "~", TempTabuleiro_1, TempTabuleiro_2),
+    muda_valor_casa(NovaLinha, NovaColuna, "X", TempTabuleiro_2, NovoTabuleiro).
     
 realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
+    print("4 DE COMER"),nl,
+
     peca_X_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = "True",
+
     TempLinha is Linha - 1, TempColuna is Coluna - 1,
-    muda_valor_casa(Linha, Coluna, "~", Tabuleiro), muda_valor_casa(TempLinha, TempColuna, "~", Tabuleiro),
-    muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro. 
+
+    muda_valor_casa(Linha, Coluna, "~", Tabuleiro, TempTabuleiro_1), muda_valor_casa(TempLinha, TempColuna, "~", TempTabuleiro_1, TempTabuleiro_2),
+    muda_valor_casa(NovaLinha, NovaColuna, "X", TempTabuleiro_2, NovoTabuleiro). 
 
 /* ----------------------------- INICIO DO LOOP DO JOGO ----------------------------- */
 
@@ -374,7 +394,7 @@ menu_opcao(Opcao) :-
     nl, print("6- A dama pode comer ou andar para tras, porem, apenas uma casa por vez."),nl.
 
 menu_opcao(Opcao) :-
-    Opcao = _,
+    Opcao > 2,
     print("Opcao invalida, tenta de novo, parca!"),nl,
     nl, main.
 
