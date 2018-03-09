@@ -243,7 +243,7 @@ retorna_vencedor(Tabuleiro, Elemento) :-
 %
 menu_opcao(Opcao) :-
     Opcao = 1, inicia_jogo(retorna_vencedor(novo_tabuleiro, Elemento), "X", novo_tabuleiro),
-    Opcao = 2, print("COLOCA AS REGRAS AQUI!"),
+    Opcao = 2, print("t1- Nao eh permitido peca normal comer ou andar para tras.\n\t2- Pode comer apenas uma peca.\n\t3- Pecas normais so andam uma casa por vez.\n\t4- O Jogo dura 10 ou mais minutos.\n\t5- Nao eh permitido jogar com uma peca do adversario.\n\t6- A dama pode comer ou andar para tras porém ainda apenas uma casa por vez.\n"),
     Opcao = _, main.
     
 pega_posicao(Linha, Coluna):-
@@ -264,6 +264,7 @@ inicia_jogo(Tabuleiro, Jogador):-
 	print(X),
 	pega_posicao(Linha, Coluna),
 	pega_nova_posicao(NovaLinha, NovaColuna),
+	makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro),
 	
 
 
@@ -292,7 +293,8 @@ makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro
 	peca_X_come_para_direita(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(Linha-1, Coluna+1, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro.
 	
 makePlay(Linha, Coluna, NovaLinha, NovaColuna, Jogador, Tabuleiro, NovoTabuleiro) :-
-	peca_X_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(Linha-1, Coluna-1, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabuleiro.
+	peca_X_come_para_esquerda(LinhaAtual, ColunaAtual, NovaLinha, NovaColuna, Tabuleiro, Permissao), Permissao = True, muda_valor_casa(Linha, Coluna, " ", Tabuleiro), muda_valor_casa(Linha-1, Coluna-1, " ", Tabuleiro), muda_valor_casa(NovaLinha, NovaColuna, "X", Tabuleiro), NovoTabuleiro = Tabu
+	
 
 	
 
