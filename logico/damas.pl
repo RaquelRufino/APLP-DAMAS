@@ -41,21 +41,13 @@ pecaDoOponente("M", "Z").
 % 
 desenha_tabuleiro([L1, L2, L3, L4, L5, L6, L7, L8, L9]) :-  
     desenha_linha(L1),
-        write("      -------------------------------------------------------"), nl,
-    desenha_linha(L2), 
-        write("      -------------------------------------------------------"), nl,  
+    desenha_linha(L2),  
     desenha_linha(L3),
-        write("      -------------------------------------------------------"), nl,
     desenha_linha(L4),
-        write("      -------------------------------------------------------"), nl,
     desenha_linha(L5), 
-        write("      -------------------------------------------------------"), nl,
     desenha_linha(L6), 
-        write("      -------------------------------------------------------"), nl,
     desenha_linha(L7), 
-        write("      -------------------------------------------------------"), nl,
     desenha_linha(L8), 
-        write("      -------------------------------------------------------"), nl,
     desenha_linha(L9), nl.  
   
 % Desenha uma linha.
@@ -149,6 +141,15 @@ verifica_pecas_na_posicao("O", Linha, Coluna, Tabuleiro, Resultado) :-
     (Elemento =:= "O"; Elemento =:= "M"), 
     Resultado = "True";
     Resultado = "False".
+
+verifica_igualdade_tabuleiros([], _, Result) :-
+    Result = "True".
+verifica_igualdade_tabuleiros([T|Ts], [N|Ns], Result) :-
+    T = N,
+    verifica_igualdade_tabuleiros(Ts, Ns, Result).
+verifica_igualdade_tabuleiros([T|Ts], [N|Ns], Result) :-
+    Result = "False".
+
 
 
 
@@ -309,12 +310,12 @@ pula(_, _, _, _, Tabuleiro, NovoTabuleiro) :-
 
 
 verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador) :-
-    Tabuleiro = NovoTabuleiro, 
+    write("veio"),nl,
+    verifica_igualdade_tabuleiros(Tabuleiro, NovoTabuleiro, Result),
+    Result = "True",
     Mensagem = "Jogada inválida!",
     NovoJogador = Jogador.
-    .
-verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador) :-
-    Tabuleiro \= NovoTabuleiro, 
+verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador) :- 
     Mensagem = "Jogada realizada!",
     alterna_jogador(Jogador, NovoJogador).
 
@@ -331,7 +332,9 @@ realiza_jogada(Linha, Coluna, NovaLinha, NovaColuna, Tabuleiro, Jogador, NovoTab
     pula(Linha, Coluna, NovaLinha, NovaColuna, Elemento, Tabuleiro, NovoTabuleiro),
     verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador).
 realiza_jogada(_, _, _, _, Tabuleiro, Jogador, NovoTabuleiro, NovoJogador, Mensagem) :-
-    verifica_jogada(Tabuleiro, NovoTabuleiro, Mensagem, Jogador, NovoJogador).
+    NovoTabuleiro = Tabuleiro,
+    NovoJogador = Jogador,
+    Mensagem = "Jogada inválida!".
 
 
 inicia_jogo(Tabuleiro, Jogador):-
